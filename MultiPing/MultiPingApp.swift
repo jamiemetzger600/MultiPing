@@ -10,10 +10,11 @@ struct MultiPingApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
-        WindowGroup("Devices") {
+        Window("Devices", id: "devices") {
             DeviceListView()
+                .frame(width: 300, height: 500)
         }
-        .handlesExternalEvents(matching: ["devices"])
+        // Removed fixed default size to allow dynamic sizing based on content
     }
 }
 
@@ -21,11 +22,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var statusItem: NSStatusItem!
     var pingManager = PingManager.shared
     var cancellable: AnyCancellable?
+    
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        return false
+    }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         setupCustomMenuBarView()
         updateMenu()
+        // openFloatingWindow()
 
         cancellable = pingManager.$devices
             .receive(on: RunLoop.main)
@@ -48,6 +54,26 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if let url = URL(string: "multiping://devices") {
             NSWorkspace.shared.open(url)
         }
+    }
+
+    func openFloatingWindow() {
+        let panel = NSPanel(
+            contentRect: NSRect(x: 100, y: 100, width: 200, height: 500),
+            styleMask: [.titled, .closable, .nonactivatingPanel, .resizable],
+            backing: .buffered,
+            defer: false
+        )
+        panel.isFloatingPanel = true
+        panel.level = .floating
+        panel.hidesOnDeactivate = false
+        panel.title = "Status Panel"
+        panel.isReleasedWhenClosed = false
+        panel.contentView = NSHostingView(rootView: DeviceListView())
+        panel.makeKeyAndOrderFront(nil)
+    }
+
+    @objc func showFloating() {
+        openFloatingWindow()
     }
 
     func setupCustomMenuBarView() {

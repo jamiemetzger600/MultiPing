@@ -36,11 +36,14 @@ struct DeviceListView: View {
             }
 
             HStack {
-                Spacer()
                 Button("Delete Selected", action: deleteSelected)
+                    .fixedSize()
                 Button("Move Up", action: moveSelectedUp)
+                    .fixedSize()
                 Button("Move Down", action: moveSelectedDown)
+                    .fixedSize()
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.bottom, 5)
 
             Divider()
@@ -59,8 +62,8 @@ struct DeviceListView: View {
             }
             .padding(.top, 4)
         }
-        .padding()
-        .frame(width: 400, height: 500)
+        .padding(5)
+        .frame(minWidth: 0, idealWidth: nil, maxWidth: .infinity, minHeight: 500, maxHeight: .infinity)
     }
 
     func deleteSelected() {
