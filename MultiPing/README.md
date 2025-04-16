@@ -1,4 +1,4 @@
-# MultiPing v1.1
+# MultiPing v1.3
 
 A macOS utility for monitoring multiple devices via ping with an elegant interface.
 
@@ -60,6 +60,13 @@ Printer,192.168.1.200,Office printer
 ## Support
 
 For issues or feature requests, please open an issue on the GitHub repository.
+
+## Future Plans
+
+- Re-enable and debug Command Line Interface (CLI) mode.
+- Display Packet Loss and Latency details within the GUI, potentially with color-coding for clarity.
+- Allow users to configure the ping refresh interval (e.g., every 1 second, 5 seconds, etc.).
+- General UI/UX improvements and polish.
 
 ## License
 
