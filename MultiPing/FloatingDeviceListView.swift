@@ -55,12 +55,17 @@ struct FloatingDeviceListView: View {
 }
 
 struct SimplifiedDeviceView: View {
+    @EnvironmentObject var appDelegate: AppDelegate
+    
     @ObservedObject var pingManager = PingManager.shared
     @State private var alwaysOnTop = UserDefaults.standard.bool(forKey: "alwaysOnTop")
     @State private var showNotes = false
     weak var windowRef: NSWindow?
     
     var body: some View {
+        // Add logging
+        let _ = print("SimplifiedDeviceView: Computing body. Delegate=\(appDelegate), Devices=\(pingManager.devices.count)")
+        
         GeometryReader { geometry in
             VStack(alignment: .leading, spacing: 4) {
                 // Header with controls
@@ -81,18 +86,8 @@ struct SimplifiedDeviceView: View {
                     .buttonStyle(.borderless)
                     
                     Button(action: {
-                        // First show menu bar and main window
-                        if let appDelegate = NSApp.delegate as? AppDelegate {
-                            appDelegate.showMenuBar()
-                            appDelegate.showMainWindow()
-                            NSApp.activate(ignoringOtherApps: true)
-                        }
-                        
-                        // Then hide floating window
-                        FloatingWindowController.shared.hide()
-                        
-                        // Update the mode in UserDefaults
-                        UserDefaults.standard.set("menuBar", forKey: "preferredInterface")
+                        print("Gear icon clicked: Using EnvironmentObject AppDelegate.")
+                        self.appDelegate.switchMode(to: "menuBar")
                     }) {
                         Image(systemName: "gear")
                             .help("Switch to Menu Bar Mode")

@@ -12,345 +12,301 @@ struct MultiPingApp: App {
     var body: some Scene {
         WindowGroup {
             DeviceListView()
-                .frame(minHeight: 500)
-                .background {
-                    Color.clear
-                        .task {
-                            if let window = NSApplication.shared.windows.first {
-                                window.title = "Devices"
-                                // Configure the window that SwiftUI creates
-                                window.titlebarAppearsTransparent = true
-                                window.titleVisibility = .hidden
-                                window.toolbarStyle = .unifiedCompact
-                                
-                                // Store this window reference in AppDelegate
-                                if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
-                                    appDelegate.configureMainWindow(window)
-                                }
-                            }
-                        }
-                }
+                .environmentObject(appDelegate)
+                .frame(minWidth: 280, maxWidth: 320, minHeight: 500)
         }
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
-        .defaultSize(width: 280, height: 500)
-        .windowToolbarStyle(.unifiedCompact)
     }
 }
 
 // Move AppDelegate to this file to ensure it's in scope
-@objc class AppDelegate: NSObject, NSApplicationDelegate, ModeSwitching {
-    private var menuBarController: MenuBarController?
-    var statusItem: NSStatusItem!
+@objc class AppDelegate: NSObject, NSApplicationDelegate, ModeSwitching, ObservableObject {
+
+    // MARK: - Published Properties
+    @Published var currentMode: String = "menuBar" // Single source of truth
+
+    // MARK: - Controllers and Managers
+    private var menuBarController = MenuBarController.shared
     var pingManager = PingManager.shared
+    private var mainWindowManager = MainWindowManager.shared
+    private var floatingWindowController = FloatingWindowController.shared
+
+    // MARK: - Internal State
     var cancellable: AnyCancellable?
-    private var mainWindow: NSWindow? {
-        willSet {
-            // Remove observers from old window
-            if let oldWindow = mainWindow {
-                NotificationCenter.default.removeObserver(self, name: NSWindow.didResizeNotification, object: oldWindow)
-                NotificationCenter.default.removeObserver(self, name: NSWindow.didMoveNotification, object: oldWindow)
+    private var cancellables = Set<AnyCancellable>() // Store cancellables
+    private var statusBarCleanupComplete = false
+
+    // MARK: - Lifecycle
+    override init() {
+        super.init()
+        // Observe changes to currentMode to persist it
+        $currentMode
+            .debounce(for: .milliseconds(100), scheduler: RunLoop.main) // Debounce to avoid rapid writes
+            .sink { mode in
+                print("Saving mode to UserDefaults: \\(mode)")
+                UserDefaults.standard.set(mode, forKey: "preferredInterface")
             }
-        }
+            .store(in: &cancellables)
     }
-    
-    // Add constants for UserDefaults keys
-    private let windowFrameKey = "MainWindowFrame"
-    
+
     deinit {
-        // Clean up observers
-        if let window = mainWindow {
-            NotificationCenter.default.removeObserver(self, name: NSWindow.didResizeNotification, object: window)
-            NotificationCenter.default.removeObserver(self, name: NSWindow.didMoveNotification, object: window)
-        }
+        performCleanup()
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Set default interface mode to menuBar and ensure it's visible
-        UserDefaults.standard.register(defaults: [
-            "preferredInterface": "menuBar"
-        ])
-        
-        // Initialize menu bar
-        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-        statusItem.isVisible = true  // Ensure visibility
-        setupCustomMenuBarView()
-        updateMenu()
+        print("AppDelegate: applicationDidFinishLaunching")
+        setupSignalHandling()
 
-        // Set up device updates
-        cancellable = pingManager.$devices
-            .receive(on: RunLoop.main)
-            .sink { [weak self] _ in
-                self?.setupCustomMenuBarView()
-                self?.updateMenu()
-            }
-
-        Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [self] _ in
-            self.pingManager.pingAll { updated in
-                self.setupCustomMenuBarView()
-                if updated.contains(where: { !$0.isReachable }) {
-                    NSApp.requestUserAttention(.criticalRequest)
-                }
-            }
-        }
-        
-        // Switch to the saved mode (this will handle showing/hiding windows appropriately)
-        let savedMode = UserDefaults.standard.string(forKey: "preferredInterface") ?? "menuBar"
-        switchMode(to: savedMode)
-    }
-    
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        return false
-    }
-    
-    func showMenuBar() {
-        statusItem.isVisible = true
-        setupCustomMenuBarView()
-        updateMenu()
-        
-        // Ensure menu is properly set up
-        if statusItem.menu == nil {
-            updateMenu()
-        }
-    }
-    
-    func hideMenuBar() {
-        statusItem.isVisible = false
-    }
-    
-    func configureMainWindow(_ window: NSWindow) {
-        mainWindow = window
-        setupWindowFrameHandling(window)
-        
-        // Restore saved frame if it exists
-        if let dict = UserDefaults.standard.dictionary(forKey: windowFrameKey) as? [String: CGFloat] {
-            window.setFrame(NSRect(
-                x: dict["x"] ?? 0,
-                y: dict["y"] ?? 0,
-                width: dict["width"] ?? 280,
-                height: dict["height"] ?? 500
-            ), display: true)
+        // Configure the main window *before* showing it
+        if let window = NSApp.windows.first { // Assume the first window is the main one
+            mainWindowManager.configureMainWindow(window)
         } else {
-            window.center()
+            print("AppDelegate: Error - Main window not found during launch.")
+            // Handle error? Maybe schedule a check?
+        }
+
+        // Always start in menu bar mode explicitly
+        currentMode = "menuBar"
+        print("AppDelegate: Initial mode set to \\(currentMode)")
+
+        menuBarController.setup(with: pingManager)
+        mainWindowManager.showMainWindow() // Now uses the stored reference
+
+        setupDeviceUpdatesSubscription()
+        startPingTimer()
+
+        // Apply the initial mode UI state
+        applyModeState(mode: currentMode)
+        print("AppDelegate: Initial mode UI applied")
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        performCleanup()
+        Thread.sleep(forTimeInterval: 0.1) // Allow cleanup
+    }
+
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        return false // Keep running even if main window closes
+    }
+
+    // MARK: - Setup Methods
+    private func setupSignalHandling() {
+        signal(SIGTERM) { _ in
+            // Use weak self or ensure proper capture semantics if needed
+            if let delegate = NSApp.delegate as? AppDelegate {
+                print("Received SIGTERM, performing cleanup.")
+                delegate.performCleanup()
+            }
+            exit(0)
         }
     }
 
-    func showMainWindow() {
-        NSApp.activate(ignoringOtherApps: true)
-        
-        if let window = mainWindow {
-            // Restore the saved frame before showing
-            if let dict = UserDefaults.standard.dictionary(forKey: windowFrameKey) as? [String: CGFloat] {
-                window.setFrame(NSRect(
-                    x: dict["x"] ?? 0,
-                    y: dict["y"] ?? 0,
-                    width: dict["width"] ?? 280,
-                    height: dict["height"] ?? 500
-                ), display: true)
+    private func setupDeviceUpdatesSubscription() {
+        pingManager.$devices
+            .receive(on: RunLoop.main)
+            .sink { [weak self] devices in
+                self?.menuBarController.updateStatusItem(with: devices)
             }
-            window.makeKeyAndOrderFront(nil)
-            window.orderFrontRegardless()
+            .store(in: &cancellables) // Store cancellable
+    }
+
+    private func startPingTimer() {
+        Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { [weak self] _ in
+            self?.pingManager.pingAll { updatedDevices in
+                 // The subscription above handles the UI update
+                 // Optionally log here if needed
+            }
+        }
+        // Note: This timer doesn't need to be stored if it repeats indefinitely
+        // and doesn't need explicit invalidation before app termination.
+    }
+
+    // MARK: - Mode Switching Core Logic
+    func switchMode(to newMode: String) {
+        guard newMode != currentMode else {
+            print("AppDelegate: Mode \\(newMode) is already active.")
             return
         }
-        
-        // If we don't have a window reference, look for it
-        if let window = NSApp.windows.first(where: { $0.title == "Devices" }) {
-            // Restore the saved frame before showing
-            if let dict = UserDefaults.standard.dictionary(forKey: windowFrameKey) as? [String: CGFloat] {
-                window.setFrame(NSRect(
-                    x: dict["x"] ?? 0,
-                    y: dict["y"] ?? 0,
-                    width: dict["width"] ?? 280,
-                    height: dict["height"] ?? 500
-                ), display: true)
-            }
-            window.makeKeyAndOrderFront(nil)
-            window.orderFrontRegardless()
-            configureMainWindow(window)
+        guard ["menuBar", "floatingWindow", "cli"].contains(newMode) else {
+            print("AppDelegate: Invalid mode requested: \\(newMode)")
+            return
         }
+
+        print("AppDelegate: Switching mode from \\(currentMode) to \\(newMode)")
+        currentMode = newMode // Update the published property (triggers save via sink)
+
+        // Apply the UI state for the new mode
+        applyModeState(mode: newMode)
     }
-    
-    func hideMainWindow() {
-        if let window = mainWindow ?? NSApp.windows.first(where: { $0.title == "Devices" }) {
-            window.orderOut(nil)
-        }
-    }
-    
-    @objc func openSettings() {
+
+    private func applyModeState(mode: String) {
+        print("AppDelegate: Applying UI state for mode \\(mode)")
+        // Use DispatchQueue.main.async to ensure UI updates happen on the main thread
         DispatchQueue.main.async {
-            NSApp.activate(ignoringOtherApps: true)
-            
-            // First ensure we're in menu bar mode
-            self.switchMode(to: "menuBar")
-            
-            // Make sure we're showing the main window properly
-            if let window = self.mainWindow ?? NSApp.windows.first(where: { $0.title == "Devices" }) {
-                window.makeKeyAndOrderFront(nil)
-                window.orderFrontRegardless()
+            switch mode {
+            case "menuBar":
+                print("Applying menuBar state")
+                self.floatingWindowController.hide()
+                self.menuBarController.show() // Ensure menu bar is visible
+                self.mainWindowManager.showMainWindow() // Ensure main window is visible
+
+            case "floatingWindow":
+                print("Applying floatingWindow state")
+                self.menuBarController.hide() // Hide menu bar icons
+                self.mainWindowManager.hideMainWindow() // Hide main window
+                self.floatingWindowController.show(appDelegate: self) // Pass self
+
+            case "cli":
+                print("Applying cli state")
+                self.floatingWindowController.hide()
+                self.menuBarController.hide()
+                self.mainWindowManager.hideMainWindow()
+                self.launchCliScript()
+
+            default:
+                print("Applying default (menuBar) state due to unknown mode")
+                self.floatingWindowController.hide()
+                self.menuBarController.show()
+                self.mainWindowManager.showMainWindow()
+            }
+            print("AppDelegate: Finished applying UI state for mode \\(mode)")
+        }
+    }
+
+    // MARK: - CLI Script Launching
+    private func launchCliScript() {
+        print("Attempting to launch cli.py")
+        guard let scriptPath = Bundle.main.path(forResource: "cli", ofType: "py") else {
+            print("Error: Could not find cli.py in the app bundle.")
+            DispatchQueue.main.async {
+                 self.switchMode(to: "menuBar")
+            }
+            return
+        }
+        print("Found cli.py at: \(scriptPath)")
+
+        // Get the specific python3 path (replace with user's actual path)
+        let pythonPath = "/Users/jamie/.pyenv/shims/python3" // <-- REPLACE WITH ACTUAL PATH from 'which python3'
+
+        // Construct the command using AppleScript's 'quoted form of' for safety
+        // Keep '&& exit' removed for debugging
+        let appleScriptSource = """
+        set pyPath to quoted form of \"\(pythonPath)\"
+        set scriptArg to quoted form of \"\(scriptPath)\"
+        set commandToRun to pyPath & \" \" & scriptArg
+        print(\"Final command for Terminal: \" & commandToRun) -- Log inside AppleScript
+
+        tell application \"Terminal\"
+            activate
+            try
+                do script commandToRun
+            on error errMsg number errorNumber
+                 log \"AppleScript Execution Error: \" & errMsg & \" (\" & errorNumber & \")\"
+                 -- Optionally signal back to the app or display an error
+            end try
+        end tell
+        """
+        print("Generated AppleScript:\n\(appleScriptSource)") // Log the script source
+
+        var errorDict: NSDictionary? = nil
+        if let scriptObject = NSAppleScript(source: appleScriptSource) {
+            if scriptObject.executeAndReturnError(&errorDict) != nil {
+                print("AppleScript executed (check Terminal for script output/errors).")
             } else {
-                self.showMainWindow()
+                print("AppleScript Execution Failed: \(errorDict ?? [:])")
+                DispatchQueue.main.async {
+                     self.switchMode(to: "menuBar") // Fallback on error
+                 }
+            }
+        } else {
+            print("Error: Could not create NSAppleScript object.")
+             DispatchQueue.main.async {
+                 self.switchMode(to: "menuBar") // Fallback on error
+             }
+        }
+    }
+
+    // MARK: - Actions
+    @objc func openSettings() {
+        print("AppDelegate: openSettings called")
+        // Switch to menu bar mode first, which will show the main window
+        switchMode(to: "menuBar")
+        // Ensure the app is active
+        DispatchQueue.main.async {
+             NSApp.activate(ignoringOtherApps: true)
+        }
+    }
+
+    // MARK: - Cleanup
+    private func performCleanup() {
+        guard !statusBarCleanupComplete else { return }
+        print("AppDelegate: Performing cleanup")
+
+        // Cancel Combine subscriptions
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
+
+        // Cancel legacy cancellable if still used
+        cancellable?.cancel()
+        cancellable = nil
+
+        // Ensure UI cleanup is on main thread
+        let cleanupTask = { [weak self] in
+            print("AppDelegate: Cleaning up status bar")
+            self?.menuBarController.cleanup() // Safely call cleanup
+            // Any other UI cleanup
+        }
+
+        if Thread.isMainThread {
+            cleanupTask()
+        } else {
+            DispatchQueue.main.sync {
+                cleanupTask()
             }
         }
-    }
 
-    func setupCustomMenuBarView() {
-        let capsuleRow = HStack(spacing: 6) {
-            ForEach(pingManager.devices) { device in
-                Text(device.name)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(device.isReachable ? Color.green : Color.red)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                    .font(.system(size: 10, weight: .medium))
-            }
+        // Clean up observers (ensure window reference is valid or handle nil)
+        if let window = NSApp.windows.first(where: { $0.title == "Devices" }) {
+             print("AppDelegate: Removing window observers")
+            NotificationCenter.default.removeObserver(self, name: NSWindow.didResizeNotification, object: window)
+            NotificationCenter.default.removeObserver(self, name: NSWindow.didMoveNotification, object: window)
+        } else {
+             print("AppDelegate: Main window not found for observer removal.")
         }
-        .padding(.horizontal, 6)
 
-        let hostingView = NSHostingView(rootView: capsuleRow)
-        hostingView.layout()
-        let size = hostingView.fittingSize
-
-        statusItem.length = size.width + 12
-        statusItem.button?.subviews.forEach { $0.removeFromSuperview() }
-        statusItem.button?.addSubview(hostingView)
-
-        hostingView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            hostingView.centerYAnchor.constraint(equalTo: statusItem.button!.centerYAnchor),
-            hostingView.centerXAnchor.constraint(equalTo: statusItem.button!.centerXAnchor)
-        ])
+        statusBarCleanupComplete = true
+        print("AppDelegate: Cleanup complete")
     }
 
-    func updateMenu() {
-        let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Edit Devices", action: #selector(openSettings), keyEquivalent: ","))
-        menu.addItem(NSMenuItem.separator())
-
-        let capsuleRowView = NSHostingView(rootView:
-            HStack(spacing: 8) {
-                ForEach(pingManager.devices) { device in
-                    Text(device.name)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(device.isReachable ? Color.green : Color.red)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                        .font(.system(size: 12, weight: .semibold))
-                }
-            }
-            .padding(.horizontal, 10)
-            .padding(.vertical, 4)
-        )
-
-        let customItem = NSMenuItem()
-        customItem.view = capsuleRowView
-        menu.addItem(customItem)
-
-        statusItem.menu = menu
+    private func cleanupStatusBar() {
+        // This method seems redundant now, performCleanup handles it.
+        // Kept for compatibility if called elsewhere, but recommend removing if not.
+        print("AppDelegate: cleanupStatusBar called (consider removing)")
+        // performCleanup() // Delegate to the main cleanup logic - REMOVED, handled by performCleanup directly
     }
 
-    // Add the ModeSwitching protocol implementation
-    func switchMode(to mode: String) {
-        // Save the current window frame before switching modes
-        if let window = mainWindow {
-            saveWindowFrame()
-        }
-        
-        switch mode {
-        case "menuBar":
-            // First hide floating window
-            FloatingWindowController.shared.hide()
-            // Then show menu bar and main window
-            showMenuBar()
-            showMainWindow()
-        case "floatingWindow":
-            // First hide menu bar and main window
-            hideMenuBar()
-            hideMainWindow()
-            // Then show floating window
-            FloatingWindowController.shared.show()
-        case "cli":
-            FloatingWindowController.shared.hide()
-            hideMenuBar()
-            hideMainWindow()
-            CLIRunner.shared.start()
-        default:
-            break
-        }
-        
-        // Save the selected mode
-        UserDefaults.standard.set(mode, forKey: "preferredInterface")
-    }
+     // MARK: - Deprecated/Refactored Methods (Remove)
+     // func showMenuBar() { ... } - REMOVED
+     // func hideMenuBar() { ... } - REMOVED
+}
 
-    private func setupWindowFrameHandling(_ window: NSWindow) {
-        // Remove any existing observers first
-        NotificationCenter.default.removeObserver(self, name: NSWindow.didResizeNotification, object: window)
-        NotificationCenter.default.removeObserver(self, name: NSWindow.didMoveNotification, object: window)
-        
-        // Add new observers
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(windowDidResize(_:)),
-            name: NSWindow.didResizeNotification,
-            object: window
-        )
-        
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(windowDidMove(_:)),
-            name: NSWindow.didMoveNotification,
-            object: window
-        )
-        
-        // Set window delegate to handle window closing
-        window.delegate = self
-    }
-    
-    @objc internal func windowDidResize(_ notification: Notification) {
-        if let window = notification.object as? NSWindow, window === mainWindow {
-            saveWindowFrame()
-        }
-    }
-    
-    @objc internal func windowDidMove(_ notification: Notification) {
-        if let window = notification.object as? NSWindow, window === mainWindow {
-            saveWindowFrame()
-        }
-    }
-    
-    private func saveWindowFrame() {
-        guard let window = mainWindow else { return }
-        let frame = window.frame
-        let dict: [String: CGFloat] = [
-            "x": frame.origin.x,
-            "y": frame.origin.y,
-            "width": frame.size.width,
-            "height": frame.size.height
-        ]
-        UserDefaults.standard.set(dict, forKey: windowFrameKey)
-    }
-    
-    private func getSavedWindowFrame() -> NSRect {
-        if let dict = UserDefaults.standard.dictionary(forKey: windowFrameKey) as? [String: CGFloat] {
-            return NSRect(
-                x: dict["x"] ?? 0,
-                y: dict["y"] ?? 0,
-                width: dict["width"] ?? 280,
-                height: dict["height"] ?? 500
-            )
-        }
-        return NSRect(x: 0, y: 0, width: 280, height: 500)
+// Add EnvironmentKey for AppDelegate
+private struct AppDelegateKey: EnvironmentKey {
+    static let defaultValue: AppDelegate? = nil
+}
+
+extension EnvironmentValues {
+    var appDelegate: AppDelegate? {
+        get { self[AppDelegateKey.self] }
+        set { self[AppDelegateKey.self] = newValue }
     }
 }
 
-// Add window delegate methods
+// Extension for window delegate methods remains the same
 extension AppDelegate: NSWindowDelegate {
     func windowWillClose(_ notification: Notification) {
-        if let window = notification.object as? NSWindow, window === mainWindow {
-            // Save the frame before the window closes
-            saveWindowFrame()
-            
+        if let window = notification.object as? NSWindow, window === NSApp.windows.first(where: { $0.title == "Devices" }) {
             // Remove observers
             NotificationCenter.default.removeObserver(self, name: NSWindow.didResizeNotification, object: window)
             NotificationCenter.default.removeObserver(self, name: NSWindow.didMoveNotification, object: window)

@@ -1,16 +1,43 @@
-# macOS
-.DS_Store
-
 # Xcode
-*.xcuserstate
-*.xcworkspace
-*.xcuserdata
+.DS_Store
+xcuserdata/
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
 DerivedData/
+.swiftpm/
+
+# Build products
 build/
+*.o
+*.LinkFileList
+*.hmap
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
 
 # Swift Package Manager
 .build/
 Packages/
+Package.pins
+Package.resolved
+
+# macOS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Compiled app
+*.app
+*.ipa
+*.dSYM.zip
+*.dSYM
 
 # Misc
 *.log

@@ -1,22 +1,38 @@
 import SwiftUI
 import Foundation
 
-// Make FloatingWindowController a shared instance
-extension FloatingWindowController {
-    static let shared = FloatingWindowController()
-}
-
+// Remove the extension since we already have shared in the class
 struct DeviceListView: View {
+    // EnvironmentObject for AppDelegate access
+    @EnvironmentObject var appDelegate: AppDelegate
+    
+    // Local ObservedObject for PingManager (could also be passed via environment if preferred)
     @ObservedObject var pingManager = PingManager.shared
+    
+    // UI State
     @State private var newDevice = Device(name: "", ipAddress: "", note: "")
     @State private var selectedDeviceIDs = Set<UUID>()
     @State private var showingFileImporter = false
     @State private var importError: String?
     @State private var showingErrorAlert = false
-    @State private var selectedMode = "menuBar"  // Default to menuBar
     
-    // Use the shared instance
-    private let floatingController = FloatingWindowController.shared
+    // Computed property to access the current mode from AppDelegate
+    private var currentMode: Binding<String> {
+        Binding(
+            get: { appDelegate.currentMode },
+            set: { newMode in
+                // Trigger the mode switch in AppDelegate
+                appDelegate.switchMode(to: newMode)
+            }
+        )
+    }
+
+    // No longer needed controllers here, handled by AppDelegate
+    // private let floatingController = FloatingWindowController.shared
+    // private let mainWindowManager = MainWindowManager.shared
+
+    // Access appDelegate via EnvironmentObject
+    // private var appDelegate: AppDelegate? { ... }
 
     var selectedIndices: [Int] {
         selectedDeviceIDs.compactMap { id in
@@ -125,62 +141,26 @@ struct DeviceListView: View {
             .padding(.vertical, 5)
             Divider()
 
-            // Mode selector at the bottom
+            // Mode selector - Binds to the computed property
             VStack(alignment: .leading, spacing: 8) {
                 Text("Display Mode").font(.headline)
-                Picker("Interface", selection: $selectedMode) {
+                Picker("Interface", selection: currentMode) { // Use the binding here
                     Text("Menu Bar").tag("menuBar")
                     Text("Float").tag("floatingWindow")
-                    Text("CLI").tag("cli")
+                    // Text("CLI").tag("cli") // Temporarily hide CLI option
                 }
                 .pickerStyle(SegmentedPickerStyle())
-                .onChange(of: selectedMode) { newMode in
-                    print("Mode changed to: \(newMode)")
-                    UserDefaults.standard.set(newMode, forKey: "preferredInterface")
-                    
-                    switch newMode {
-                    case "menuBar":
-                        // Hide floating window
-                        floatingController.hide()
-                        // Show menu bar and keep main window visible
-                        if let appDelegate = NSApp.delegate as? AppDelegate {
-                            appDelegate.showMenuBar()
-                        }
-                    case "floatingWindow":
-                        // Hide menu bar and main window first
-                        if let appDelegate = NSApp.delegate as? AppDelegate {
-                            appDelegate.hideMenuBar()
-                            appDelegate.hideMainWindow()
-                        }
-                        // Then show floating window
-                        DispatchQueue.main.async {
-                            floatingController.show()
-                        }
-                    case "cli":
-                        // Hide everything except CLI
-                        floatingController.hide()
-                        if let appDelegate = NSApp.delegate as? AppDelegate {
-                            appDelegate.hideMenuBar()
-                            appDelegate.hideMainWindow()
-                        }
-                        CLIRunner.shared.start()
-                    default:
-                        break
-                    }
-                }
+                // No .onChange needed here, the binding handles the update
             }
         }
         .padding(5)
         .frame(idealWidth: 260)
         .frame(minWidth: 240, maxWidth: 320)
         .onAppear {
-            // On first launch, ensure menu bar is visible but don't change window visibility
-            selectedMode = "menuBar"  // Ensure default selection is Menu Bar
-            if let appDelegate = NSApp.delegate as? AppDelegate {
-                appDelegate.showMenuBar()
-            }
-            // Start pinging devices immediately
-            pingManager.pingAll()
+            // Remove mode setting logic from here
+            // AppDelegate handles initial setup
+            pingManager.pingAll() // Still start pings
+            print("DeviceListView appeared. Current mode from delegate: \(appDelegate.currentMode)")
         }
         .alert("Import Error", isPresented: $showingErrorAlert, presenting: importError) { _ in
             Button("OK", role: .cancel) {}
@@ -241,54 +221,12 @@ struct DeviceListView: View {
     }
 
     private func importDevicesFromFile(url: URL) {
-        do {
-            let content: String
-            
-            // Handle RTF files differently
-            if url.pathExtension.lowercased() == "rtf" {
-                guard let rtfData = try? Data(contentsOf: url),
-                      let attributedString = try? NSAttributedString(
-                        data: rtfData,
-                        options: [.documentType: NSAttributedString.DocumentType.rtf],
-                        documentAttributes: nil
-                      ) else {
-                    throw NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to read RTF file"])
-                }
-                content = attributedString.string
-            } else {
-                content = try String(contentsOf: url)
+        FileImporter.shared.importDevicesFromFile(url) { newDevices in
+            if !newDevices.isEmpty {
+                self.pingManager.devices.append(contentsOf: newDevices)
+                // Ping all newly added devices
+                self.pingManager.pingAll()
             }
-            
-            let lines = content.components(separatedBy: .newlines)
-            
-            for line in lines where !line.isEmpty {
-                let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
-                if trimmedLine.isEmpty { continue }
-                
-                if url.pathExtension.lowercased() == "csv" {
-                    // Handle CSV format (name,ip,note)
-                    let components = trimmedLine.components(separatedBy: ",")
-                    if components.count >= 2 {
-                        let name = components[0].trimmingCharacters(in: .whitespacesAndNewlines)
-                        let ip = components[1].trimmingCharacters(in: .whitespacesAndNewlines)
-                        let note = components.count > 2 ? components[2].trimmingCharacters(in: .whitespacesAndNewlines) : nil
-                        
-                        let device = Device(name: name, ipAddress: ip, note: note)
-                        pingManager.devices.append(device)
-                    }
-                } else {
-                    // Handle simple text format (assume IP addresses only, use hostname as name)
-                    let device = Device(name: trimmedLine, ipAddress: trimmedLine)
-                    pingManager.devices.append(device)
-                }
-            }
-            
-            // Ping all new devices
-            pingManager.pingAll()
-            
-        } catch {
-            importError = "Failed to import devices: \(error.localizedDescription)"
-            showingErrorAlert = true
         }
     }
 }

@@ -9,91 +9,106 @@
 import Cocoa
 import SwiftUI
 
+// Custom panel that cannot become key or main window
+class NonActivatingPanel: NSPanel {
+    override var canBecomeKey: Bool {
+        return false
+    }
+    
+    override var canBecomeMain: Bool {
+        return false
+    }
+}
+
 class FloatingWindowController {
-    private var window: NSWindow?
+    static let shared = FloatingWindowController()
+    private var window: NonActivatingPanel?
     private var windowDelegate: WindowDelegate?
     var isVisible = false
     
-    func show() {
-        print("FloatingWindowController.show() called")
+    func show(appDelegate: AppDelegate) {
+        print("FloatingWindowController.show() called, window exists: \(window != nil), current isVisible: \(isVisible)")
         if window == nil {
             print("Creating new floating window")
-            createWindow()
+            createWindow(appDelegate: appDelegate)
         }
         
         if let window = window {
-            print("Making window key and ordering front")
-            window.makeKeyAndOrderFront(nil)
-            NSApp.activate(ignoringOtherApps: true)
-            isVisible = true
-            
-            // Ensure the window is properly positioned and visible
+            // Position window before showing
             if let screenFrame = NSScreen.main?.visibleFrame {
                 let windowFrame = window.frame
                 let newOrigin = NSPoint(
                     x: screenFrame.maxX - windowFrame.width - 20,
                     y: screenFrame.maxY - windowFrame.height - 20
                 )
-                print("Positioning window at: \(newOrigin)")
                 window.setFrameOrigin(newOrigin)
+                print("Positioned window at: \(newOrigin)")
             }
+            
+            // Show window without activation
+            window.orderFront(nil)
+            isVisible = true
+            print("Window ordered front, isVisible set to true, window.isVisible: \(window.isVisible)")
         } else {
-            print("ERROR: Window is nil after creation attempt")
+            print("ERROR: Window is still nil after creation attempt")
         }
     }
     
     func hide() {
-        print("FloatingWindowController.hide() called")
-        window?.orderOut(nil)
-        isVisible = false
-    }
-    
-    func toggle() {
-        print("FloatingWindowController.toggle() called, isVisible: \(isVisible)")
-        if isVisible {
-            hide()
-        } else {
-            show()
+        print("FloatingWindowController.hide() called, window exists: \(window != nil), current isVisible: \(isVisible)")
+        if let window = window {
+            // Ensure window isn't key before hiding
+            if window.isKeyWindow {
+                print("Window is key, resigning key")
+                window.resignKey()
+            }
+            window.orderOut(nil)
+            print("Window ordered out")
         }
+        isVisible = false
+        print("isVisible set to false")
     }
     
-    private func createWindow() {
+    private func createWindow(appDelegate: AppDelegate) {
         print("Creating floating window")
         let screenRect = NSScreen.main?.frame ?? NSRect(x: 0, y: 0, width: 400, height: 300)
         let windowRect = NSRect(x: screenRect.midX - 100, y: screenRect.midY - 200, width: 200, height: 400)
         
         let alwaysOnTop = UserDefaults.standard.bool(forKey: "alwaysOnTop")
         
-        window = NSPanel(
+        window = NonActivatingPanel(
             contentRect: windowRect,
             styleMask: [.titled, .closable, .resizable, .nonactivatingPanel],
             backing: .buffered,
             defer: false
         )
         
-        if let panel = window as? NSPanel {
+        if let panel = window {
             panel.isFloatingPanel = true
             panel.becomesKeyOnlyIfNeeded = true
             panel.hidesOnDeactivate = false
+            panel.level = alwaysOnTop ? .floating : .normal
             panel.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary]
+            print("Window created with level: \(panel.level.rawValue)")
         }
         
         window?.title = "Device Status"
         window?.isReleasedWhenClosed = false
-        window?.level = alwaysOnTop ? .floating : .normal
-        
-        print("Creating floating view")
-        // Create the floating view with the window reference
+
+        // Use the passed appDelegate directly - no need for guard let NSApp.delegate
+        print("FloatingWindowController: Using passed AppDelegate instance.")
+
+        // Create the floating view
         let floatingView = SimplifiedDeviceView(windowRef: window)
-        let hostingView = NSHostingView(rootView: floatingView)
+        // Create the hosting view, applying the modifier to the rootView
+        print("FloatingWindowController: Creating NSHostingView with EnvironmentObject applied to root view.")
+        let hostingView = NSHostingView(rootView: floatingView.environmentObject(appDelegate))
         window?.contentView = hostingView
         
-        print("Setting up window delegate")
         // Set window delegate to handle window closing
         windowDelegate = WindowDelegate(controller: self)
         window?.delegate = windowDelegate
-        
-        print("Window creation complete")
+        print("Window setup complete")
     }
 }
 
@@ -107,7 +122,13 @@ class WindowDelegate: NSObject, NSWindowDelegate {
     }
     
     func windowWillClose(_ notification: Notification) {
-        print("Window will close")
         controller?.isVisible = false
+    }
+    
+    func windowDidResignKey(_ notification: Notification) {
+        // Prevent the window from becoming key when it's not needed
+        if let window = notification.object as? NSWindow {
+            window.resignFirstResponder()
+        }
     }
 }

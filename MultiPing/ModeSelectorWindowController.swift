@@ -41,47 +41,58 @@ class ModeSelectorWindowController: NSWindowController {
     }
 }
 
+class ModeSelection: ObservableObject {
+    @Published var selectedMode: String {
+        didSet {
+            UserDefaults.standard.set(selectedMode, forKey: "preferredInterface")
+        }
+    }
+    
+    init() {
+        selectedMode = UserDefaults.standard.string(forKey: "preferredInterface") ?? "menuBar"
+    }
+}
+
 struct ModeSelectorView: View {
     let closeHandler: () -> Void
+    @StateObject private var modeSelection = ModeSelection()
+    private let modes = ["menuBar", "floatingWindow", "cli"]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 15) {
             Text("Choose how Multi-Ping should run:")
                 .font(.headline)
 
-            ForEach(["menuBar", "floatingWindow", "cli"], id: \.self) { mode in
-                Button(action: {
-                    UserDefaults.standard.set(mode, forKey: "preferredInterface")
-                    closeHandler()
-                    switch mode {
-                    case "menuBar":
-                        MenuBarController().start()
-                    case "floatingWindow":
-                        FloatingWindowController().show()
-                    case "cli":
-                        print("CLI mode selected - CLI runner not implemented yet.")
-                    default:
-                        break
+            Picker("Interface Mode", selection: $modeSelection.selectedMode) {
+                Text("Menu Bar").tag("menuBar")
+                Text("Floating Window").tag("floatingWindow")
+                Text("Command Line").tag("cli")
+            }
+            .pickerStyle(.inline)
+            .onChange(of: modeSelection.selectedMode) { newMode in
+                closeHandler()
+                switch newMode {
+                case "menuBar":
+                    MenuBarController.shared.setup(with: PingManager.shared)
+                case "floatingWindow":
+                    // FloatingWindowController.shared.show() // Commented out: Missing appDelegate argument
+                    print("ModeSelectorView: Floating window mode selected, but show() needs appDelegate.")
+                    // Need to get AppDelegate instance here to pass
+                    if let appDelegate = NSApp.delegate as? AppDelegate {
+                         appDelegate.switchMode(to: newMode) // Use switchMode instead for consistency
+                    } else {
+                         print("ModeSelectorView: ERROR - Could not get AppDelegate to switch mode.")
                     }
-                }) {
-                    Text(modeDisplayName(for: mode))
-                        .frame(maxWidth: .infinity)
+                case "cli":
+                    print("CLI mode selected - CLI runner not implemented yet.")
+                default:
+                    break
                 }
-                .buttonStyle(.borderedProminent)
             }
 
             Spacer()
         }
         .padding()
         .frame(width: 280)
-    }
-
-    private func modeDisplayName(for mode: String) -> String {
-        switch mode {
-        case "menuBar": return "Menu Bar"
-        case "floatingWindow": return "Floating Window"
-        case "cli": return "Command Line (CLI)"
-        default: return mode
-        }
     }
 }
