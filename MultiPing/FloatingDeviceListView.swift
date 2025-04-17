@@ -62,6 +62,18 @@ struct SimplifiedDeviceView: View {
     @State private var showNotes = false
     weak var windowRef: NSWindow?
     
+    // Add an observed object constructor that sets up notification handling
+    init(windowRef: NSWindow?) {
+        print("SimplifiedDeviceView: Initializing with windowRef \(windowRef != nil)")
+        self.windowRef = windowRef
+        
+        // Set up notification observer for device list changes
+        NotificationCenter.default.addObserver(forName: .deviceListChanged, object: nil, queue: .main) { _ in
+            // This will trigger a view refresh since pingManager is an @ObservedObject
+            print("SimplifiedDeviceView: Device list changed notification received")
+        }
+    }
+    
     var body: some View {
         // Add logging
         let _ = print("SimplifiedDeviceView: Computing body. Delegate=\(appDelegate), Devices=\(pingManager.devices.count)")
@@ -86,8 +98,19 @@ struct SimplifiedDeviceView: View {
                     .buttonStyle(.borderless)
                     
                     Button(action: {
-                        print("Gear icon clicked: Using EnvironmentObject AppDelegate.")
-                        self.appDelegate.switchMode(to: "menuBar")
+                        print("SimplifiedDeviceView: Gear icon clicked - switching to menuBar mode")
+                        
+                        // First hide this window to prevent visual glitches
+                        if let window = windowRef {
+                            print("SimplifiedDeviceView: Hiding floating window before mode switch")
+                            window.orderOut(nil)
+                        }
+                        
+                        // Then switch mode with a slight delay to ensure window is fully hidden
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            print("SimplifiedDeviceView: Now calling switchMode to menuBar")
+                            self.appDelegate.switchMode(to: "menuBar")
+                        }
                     }) {
                         Image(systemName: "gear")
                             .help("Switch to Menu Bar Mode")
@@ -133,5 +156,13 @@ struct SimplifiedDeviceView: View {
         }
         .frame(minWidth: 180, maxWidth: 280)
         .frame(minHeight: 100)
+        .onAppear {
+            print("SimplifiedDeviceView: onAppear called")
+        }
+        .onDisappear {
+            print("SimplifiedDeviceView: onDisappear called")
+            // Clean up notification observer when view disappears
+            NotificationCenter.default.removeObserver(self)
+        }
     }
 }

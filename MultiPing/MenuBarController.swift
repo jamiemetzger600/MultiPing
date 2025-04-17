@@ -20,14 +20,33 @@ class MenuBarController: NSObject {
     override init() {
         super.init()
         print("MenuBarController: Initialized (without creating statusItem yet)")
+        
+        // Register for notifications about device list changes
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDeviceListChanged),
+            name: .deviceListChanged,
+            object: nil
+        )
     }
     
     deinit {
+        NotificationCenter.default.removeObserver(self)
         cleanup()
+    }
+    
+    @objc private func handleDeviceListChanged() {
+        print("MenuBarController: Received device list changed notification")
+        if let devices = pingManager?.devices {
+            updateStatusItem(with: devices)
+        }
     }
     
     func cleanup() {
         guard !isCleanedUp else { return }
+        
+        // Remove observer
+        NotificationCenter.default.removeObserver(self)
         
         // Ensure we're on the main thread
         if !Thread.isMainThread {
@@ -80,28 +99,70 @@ class MenuBarController: NSObject {
     private func createStatusItemAppearance() {
          print("MenuBarController: Setting up status item appearance")
         statusItem?.button?.image = NSImage(systemSymbolName: "network", accessibilityDescription: "MultiPing")
+        
+        // Make the status bar item itself clickable to show the devices window
+        statusItem?.button?.action = #selector(statusItemClicked)
+        statusItem?.button?.target = self
+    }
+    
+    @objc private func statusItemClicked() {
+        print("MenuBarController: Status bar item clicked")
+        showDevices()
     }
     
     private func setupMenu() {
         print("MenuBarController: Setting up menu")
         let newMenu = NSMenu()
-        newMenu.addItem(NSMenuItem(title: "Edit Devices", action: #selector(showDevices), keyEquivalent: ","))
+        
+        // Add prominent Show Devices menu item at the top
+        let showDevicesItem = NSMenuItem(title: "Show Devices Window", action: #selector(showDevices), keyEquivalent: "d")
+        showDevicesItem.target = self // Set target explicitly
+        showDevicesItem.keyEquivalentModifierMask = [.command]
+        newMenu.addItem(showDevicesItem)
+        
+        // Add Edit Devices as an alternative (keeping for backward compatibility)
+        let editDevicesItem = NSMenuItem(title: "Edit Devices", action: #selector(showDevices), keyEquivalent: ",")
+        editDevicesItem.target = self // Set target explicitly
+        newMenu.addItem(editDevicesItem)
+        
         newMenu.addItem(NSMenuItem.separator())
-        newMenu.addItem(NSMenuItem(title: "Quit", action: #selector(quitApp), keyEquivalent: "q"))
+        
+        let quitItem = NSMenuItem(title: "Quit", action: #selector(quitApp), keyEquivalent: "q")
+        quitItem.target = self // Set target explicitly
+        newMenu.addItem(quitItem)
+        
         self.menu = newMenu // Store reference if needed elsewhere
         statusItem?.menu = newMenu
     }
     
-    @objc private func showDevices() {
+    @objc func showDevices() {
         print("MenuBarController: showDevices action triggered")
         // Ensure AppDelegate switches mode, which handles showing the window
         if let appDelegate = NSApp.delegate as? AppDelegate {
+            print("MenuBarController: Found AppDelegate, calling switchMode")
             appDelegate.switchMode(to: "menuBar")
+            
+            // Directly access window manager to ensure window is shown
+            print("MenuBarController: Directly showing main window")
+            MainWindowManager.shared.showMainWindow()
+        } else {
+            print("MenuBarController: ERROR - Could not find AppDelegate")
         }
+        
+        // Ensure the app is activated
+        print("MenuBarController: Activating application")
         NSApp.activate(ignoringOtherApps: true)
+        
+        // Additional direct attempt to find and show main window
+        if let window = NSApp.windows.first(where: { $0.title == "Devices" }) {
+            print("MenuBarController: Found main window, making it key and ordering front")
+            window.makeKeyAndOrderFront(nil)
+        } else {
+            print("MenuBarController: Could not find main window by title")
+        }
     }
     
-    @objc private func quitApp() {
+    @objc func quitApp() { // Also remove private for consistency
         print("MenuBarController: quitApp action triggered")
         cleanup()
         NSApp.terminate(nil)
