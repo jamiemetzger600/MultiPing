@@ -1,4 +1,4 @@
-# MultiPing v1.4
+# MultiPing v1.5
 
 A macOS utility for monitoring multiple devices via ping with an elegant interface.
 
@@ -20,8 +20,9 @@ A macOS utility for monitoring multiple devices via ping with an elegant interfa
 - **Window Management**:
   - Remembers window positions and sizes for both main and floating windows
   - Always-on-top option in floating mode
+  - Adjustable opacity for floating window
   - Improved window position persistence between sessions
-  - Better mode switching between menu bar and floating window modes
+  - Seamless mode switching between menu bar and floating window modes
 
 ## Installation
 
@@ -46,6 +47,14 @@ Printer,192.168.1.200,Office printer
 - Network access for ping functionality
 
 ## Version History
+
+### v1.5
+- Added adjustable opacity control for floating window
+- Improved menu bar interface with streamlined options
+- Enhanced toggle functionality between menu bar and floating window modes
+- Fixed window management issues when switching between modes
+- Improved synchronization between UI controls and app state
+- General performance and reliability improvements
 
 ### v1.4
 - Added IP address validation to prevent invalid inputs

@@ -16,6 +16,26 @@ struct MultiPingApp: App {
                 .environmentObject(appDelegate) // Pass the delegate
         }
         .windowStyle(.hiddenTitleBar) // Keep style
+        
+        // Add Find Devices Window
+        WindowGroup(id: "findDevices") {
+            FindDevicesView()
+                .environmentObject(appDelegate)
+                .environmentObject(PingManager.shared)
+                .onAppear {
+                    // Apply window controller to configure the window
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        if let window = NSApp.windows.first(where: { $0.title == "Find Devices" || $0.title.contains("findDevices") }) {
+                            FindDevicesWindowController.shared.configureFindDevicesWindow(window)
+                        }
+                    }
+                }
+        }
+        .windowStyle(.titleBar)
+        .windowResizability(.contentMinSize)
+        .defaultPosition(.center)
+        .defaultSize(CGSize(width: 650, height: 500))
+        .commandsRemoved()
     }
 }
 
@@ -26,10 +46,11 @@ struct MultiPingApp: App {
     @Published var currentMode: String = "menuBar" // Default mode
 
     // MARK: - Controllers and Managers (Ensure these exist)
-    private var menuBarController = MenuBarController.shared
+    var menuBarController = MenuBarController.shared
     var pingManager = PingManager.shared
-    private var mainWindowManager = MainWindowManager.shared // Assuming this exists
-    private var floatingWindowController = FloatingWindowController.shared
+    var mainWindowManager = MainWindowManager.shared // Make public
+    var floatingWindowController = FloatingWindowController.shared
+    private var findDevicesWindowController = FindDevicesWindowController.shared
 
     // MARK: - Internal State
     var cancellable: AnyCancellable?
@@ -132,6 +153,9 @@ struct MultiPingApp: App {
             if newMode == "menuBar" {
                 print("AppDelegate: Already in menuBar mode, still showing main window.")
                 mainWindowManager.showMainWindow()
+            } else if newMode == "floatingWindow" {
+                print("AppDelegate: Already in floatingWindow mode, still showing floating window.")
+                floatingWindowController.show(appDelegate: self)
             }
             print("====================================================================")
             return
@@ -165,6 +189,7 @@ struct MultiPingApp: App {
                 
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     self.mainWindowManager.showMainWindow()
+                    NSApp.activate(ignoringOtherApps: true)
                 }
             }
         } 
@@ -205,10 +230,12 @@ struct MultiPingApp: App {
                 
                 // Then show menu bar
                 self.menuBarController.setup(with: self.pingManager)
+                self.menuBarController.show() // Explicitly show the menu bar
                 
                 // Finally show main window with delay
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                     self.mainWindowManager.showMainWindow()
+                    NSApp.activate(ignoringOtherApps: true)
                 }
                 
             case "floatingWindow":
@@ -234,6 +261,7 @@ struct MultiPingApp: App {
             default:
                 print("Applying default (menuBar) state due to unknown mode: \(mode)")
                 self.floatingWindowController.hide()
+                self.menuBarController.setup(with: self.pingManager)
                 self.menuBarController.show()
                 self.mainWindowManager.showMainWindow()
             }

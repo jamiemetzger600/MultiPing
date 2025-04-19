@@ -9,6 +9,7 @@
 import Foundation
 import AppKit
 import SwiftUI
+import Combine
 
 class MenuBarController: NSObject {
     static let shared = MenuBarController()
@@ -16,10 +17,20 @@ class MenuBarController: NSObject {
     private var menu: NSMenu?
     private var pingManager: PingManager?
     private var isCleanedUp = false
+    private var cancellables = Set<AnyCancellable>()
+    
+    // Opacity property with proper defaults
+    private var menuBarOpacity: Double = UserDefaults.standard.double(forKey: "menuBarOpacity")
     
     override init() {
+        // Initialize with a default opacity of 100% if not set
+        if menuBarOpacity == 0 {
+            menuBarOpacity = 1.0
+            UserDefaults.standard.set(menuBarOpacity, forKey: "menuBarOpacity")
+        }
+        
         super.init()
-        print("MenuBarController: Initialized (without creating statusItem yet)")
+        print("MenuBarController: Initialized with opacity: \(menuBarOpacity) (\(menuBarOpacity * 100)%)")
         
         // Register for notifications about device list changes
         NotificationCenter.default.addObserver(
@@ -47,6 +58,10 @@ class MenuBarController: NSObject {
         
         // Remove observer
         NotificationCenter.default.removeObserver(self)
+        
+        // Cancel all subscriptions
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
         
         // Ensure we're on the main thread
         if !Thread.isMainThread {
@@ -76,104 +91,67 @@ class MenuBarController: NSObject {
     }
     
     func setup(with pingManager: PingManager) {
-        print("MenuBarController: Setup called")
-        self.pingManager = pingManager
-        // Create statusItem lazily if it doesn't exist
-        if statusItem == nil {
-            print("MenuBarController: Creating NSStatusItem")
-            statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
-            guard statusItem != nil else {
-                print("ERROR: Failed to create status item!")
-                return
-            }
-             print("MenuBarController: NSStatusItem created successfully")
-            createStatusItemAppearance() // Setup appearance only once
-            setupMenu() // Setup menu only once
-        }
-        show() // Ensure it's visible after setup
-        updateStatusItem(with: pingManager.devices)
-        print("MenuBarController: Setup complete")
-    }
-    
-    // Renamed from createStatusItem to avoid confusion with lazy creation
-    private func createStatusItemAppearance() {
-         print("MenuBarController: Setting up status item appearance")
-        statusItem?.button?.image = NSImage(systemSymbolName: "network", accessibilityDescription: "MultiPing")
+        print("MenuBarController: Setting up with PingManager")
         
-        // Make the status bar item itself clickable to show the devices window
-        statusItem?.button?.action = #selector(statusItemClicked)
-        statusItem?.button?.target = self
-    }
-    
-    @objc private func statusItemClicked() {
-        print("MenuBarController: Status bar item clicked")
-        showDevices()
+        // Clean up any previous setup
+        cleanup()
+        
+        self.pingManager = pingManager
+        
+        // Create status item in the menu bar
+        statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        
+        // Set up menu for status item
+        setupMenu()
+        
+        // Set up notification observation for device updates instead of publisher
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleDeviceListChanged),
+            name: .deviceListChanged,
+            object: nil
+        )
+        
+        // Initial update with current devices
+        updateStatusItem(with: pingManager.devices)
     }
     
     private func setupMenu() {
         print("MenuBarController: Setting up menu")
-        let newMenu = NSMenu()
         
-        // Add prominent Show Devices menu item at the top
-        let showDevicesItem = NSMenuItem(title: "Show Devices Window", action: #selector(showDevices), keyEquivalent: "d")
-        showDevicesItem.target = self // Set target explicitly
-        showDevicesItem.keyEquivalentModifierMask = [.command]
-        newMenu.addItem(showDevicesItem)
-        
-        // Add Edit Devices as an alternative (keeping for backward compatibility)
-        let editDevicesItem = NSMenuItem(title: "Edit Devices", action: #selector(showDevices), keyEquivalent: ",")
-        editDevicesItem.target = self // Set target explicitly
-        newMenu.addItem(editDevicesItem)
-        
-        newMenu.addItem(NSMenuItem.separator())
-        
-        let quitItem = NSMenuItem(title: "Quit", action: #selector(quitApp), keyEquivalent: "q")
-        quitItem.target = self // Set target explicitly
-        newMenu.addItem(quitItem)
-        
-        self.menu = newMenu // Store reference if needed elsewhere
-        statusItem?.menu = newMenu
-    }
-    
-    @objc func showDevices() {
-        print("MenuBarController: showDevices action triggered")
-        // Ensure AppDelegate switches mode, which handles showing the window
-        if let appDelegate = NSApp.delegate as? AppDelegate {
-            print("MenuBarController: Found AppDelegate, calling switchMode")
-            appDelegate.switchMode(to: "menuBar")
-            
-            // Directly access window manager to ensure window is shown
-            print("MenuBarController: Directly showing main window")
-            MainWindowManager.shared.showMainWindow()
-        } else {
-            print("MenuBarController: ERROR - Could not find AppDelegate")
+        guard let statusItem = statusItem else {
+            print("MenuBarController: Status item not available for menu setup")
+            return
         }
         
-        // Ensure the app is activated
-        print("MenuBarController: Activating application")
-        NSApp.activate(ignoringOtherApps: true)
+        let menu = buildMenu()
+        statusItem.menu = menu
+        self.menu = menu
         
-        // Additional direct attempt to find and show main window
-        if let window = NSApp.windows.first(where: { $0.title == "Devices" }) {
-            print("MenuBarController: Found main window, making it key and ordering front")
-            window.makeKeyAndOrderFront(nil)
-        } else {
-            print("MenuBarController: Could not find main window by title")
+        // Set up right-click menu if needed
+        if let button = statusItem.button {
+            button.sendAction(on: [.leftMouseUp, .rightMouseUp])
         }
-    }
-    
-    @objc func quitApp() { // Also remove private for consistency
-        print("MenuBarController: quitApp action triggered")
-        cleanup()
-        NSApp.terminate(nil)
+        
+        print("MenuBarController: Menu setup complete")
     }
     
     func updateStatusItem(with devices: [Device]) {
-        // Ensure setup has been called and statusItem exists
-        guard let statusItem = statusItem else { return }
+        // Skip if no status item
+        guard let statusItem = statusItem else {
+            print("MenuBarController: Status item not available for update")
+            return
+        }
         
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+        // Skip if no devices to show
+        guard !devices.isEmpty else {
+            if let button = statusItem.button {
+                button.title = "No Devices"
+            }
+            return
+        }
+        
+        DispatchQueue.main.async {
             let capsuleRow = HStack(spacing: 6) {
                 ForEach(devices) { device in
                     Text(device.name)
@@ -186,6 +164,7 @@ class MenuBarController: NSObject {
                 }
             }
             .padding(.horizontal, 6)
+            .opacity(self.menuBarOpacity)
 
             let hostingView = NSHostingView(rootView: capsuleRow)
             hostingView.layout()
@@ -194,6 +173,9 @@ class MenuBarController: NSObject {
             statusItem.length = size.width + 12 // Use the local statusItem
             statusItem.button?.subviews.forEach { $0.removeFromSuperview() }
             statusItem.button?.addSubview(hostingView)
+            
+            // Apply opacity to button as well as the view inside
+            statusItem.button?.alphaValue = CGFloat(self.menuBarOpacity)
 
             hostingView.translatesAutoresizingMaskIntoConstraints = false
             if let button = statusItem.button {
@@ -230,6 +212,7 @@ class MenuBarController: NSObject {
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
+                    .opacity(1.0) // Menu items should remain visible
                 )
                 
                 let customItem = NSMenuItem()
@@ -250,17 +233,195 @@ class MenuBarController: NSObject {
     
     func hide() {
         // Use optional chaining
-        if statusItem != nil {
-             print("MenuBarController: Hiding status item.")
-             statusItem?.isVisible = false
+        if let item = statusItem {
+            print("MenuBarController: Hiding status item.")
+            item.isVisible = false
+            // For extra safety, try setting a very small length
+            item.length = 0
         }
     }
 
     func show() {
         // Use optional chaining
-        if statusItem != nil {
+        if let item = statusItem {
             print("MenuBarController: Showing status item.")
-            statusItem?.isVisible = true
+            item.isVisible = true
+            // Reset length if needed
+            if item.length == 0 {
+                item.length = NSStatusItem.variableLength
+                // Re-apply the devices if available
+                if let devices = pingManager?.devices {
+                    updateStatusItem(with: devices)
+                }
+            }
+        } else {
+            // If statusItem is nil, try to setup again
+            if let pingManager = pingManager {
+                setup(with: pingManager)
+            }
         }
+    }
+    
+    private func buildMenu() -> NSMenu {
+        let menu = NSMenu()
+        
+        // Title item
+        let titleItem = menu.addItem(withTitle: "MultiPing", action: nil, keyEquivalent: "")
+        titleItem.attributedTitle = NSAttributedString(
+            string: "MultiPing",
+            attributes: [
+                .font: NSFont.menuFont(ofSize: 14),
+                .foregroundColor: NSColor.labelColor
+            ]
+        )
+        
+        menu.addItem(NSMenuItem.separator())
+        
+        // Add main actions
+        let showDevicesItem = menu.addItem(withTitle: "Show Devices Window", action: #selector(showDevices), keyEquivalent: "")
+        showDevicesItem.target = self
+        
+        let findDevicesItem = menu.addItem(withTitle: "Find Devices on Network", action: #selector(showFindDevicesWindow), keyEquivalent: "")
+        findDevicesItem.target = self
+        
+        // Keep only the Toggle Floating Window menu item
+        let toggleFloatingWindowItem = menu.addItem(withTitle: "Toggle Floating Window", action: #selector(toggleFloatingWindow), keyEquivalent: "")
+        toggleFloatingWindowItem.target = self
+        
+        // Add opacity submenu for menu bar only
+        let opacityMenuItem = NSMenuItem(title: "Menu Bar Opacity", action: nil, keyEquivalent: "")
+        let opacitySubmenu = NSMenu()
+        
+        // Create opacity percentage options
+        for percentage in stride(from: 100, through: 0, by: -10) {
+            let percentItem = NSMenuItem(title: "\(percentage)%", action: #selector(setOpacity(_:)), keyEquivalent: "")
+            percentItem.tag = percentage
+            percentItem.target = self
+            
+            // Mark the current opacity setting
+            let currentPercentage = Int(menuBarOpacity * 100)
+            if currentPercentage == percentage || 
+               (percentage == 100 && currentPercentage > 95) || // Handle rounding
+               (percentage == 0 && currentPercentage < 5) {    // Handle rounding
+                percentItem.state = .on
+            }
+            
+            opacitySubmenu.addItem(percentItem)
+        }
+        
+        opacityMenuItem.submenu = opacitySubmenu
+        menu.addItem(opacityMenuItem)
+        
+        // Add a separator before app control items
+        menu.addItem(NSMenuItem.separator())
+        
+        // Settings option
+        let settingsItem = menu.addItem(withTitle: "Settings...", action: #selector(showSettings), keyEquivalent: ",")
+        settingsItem.target = self
+        
+        // Quit option
+        let quitItem = menu.addItem(withTitle: "Quit", action: #selector(quitApp), keyEquivalent: "q")
+        quitItem.target = self
+        
+        return menu
+    }
+    
+    @objc func showDevices() {
+        print("MenuBarController: showDevices action triggered")
+        if let appDelegate = NSApp.delegate as? AppDelegate {
+            // Use switchMode instead of openWindow
+            appDelegate.switchMode(to: "menuBar")
+            
+            // Ensure main window is shown - access directly since it's not optional
+            DispatchQueue.main.async {
+                appDelegate.mainWindowManager.showMainWindow()
+            }
+        }
+    }
+    
+    @objc func showFindDevicesWindow() {
+        print("MenuBarController: showFindDevicesWindow action triggered")
+        
+        // Try multiple approaches to ensure the window opens
+        
+        // First approach: Use the window controller specifically created for this
+        FindDevicesWindowController.shared.show()
+        
+        // Second approach: Try to use the openWindow scene action directly
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            print("MenuBarController: Trying alternative method to open Find Devices window")
+            NSApp.sendAction(Selector(("openWindow:")), to: nil, from: "findDevices")
+            
+            // Ensure the app is activated
+            NSApp.activate(ignoringOtherApps: true)
+        }
+    }
+    
+    // Method to toggle between menubar and floating window modes
+    @objc func toggleFloatingWindow() {
+        print("MenuBarController: toggleFloatingWindow action triggered")
+        if let appDelegate = NSApp.delegate as? AppDelegate {
+            // If current mode is menuBar, switch to floatingWindow and vice versa
+            let newMode = appDelegate.currentMode == "menuBar" ? "floatingWindow" : "menuBar"
+            print("MenuBarController: Switching mode to \(newMode)")
+            
+            if newMode == "floatingWindow" {
+                // First update the current mode
+                appDelegate.currentMode = newMode
+                
+                // Hide menu bar and main window
+                appDelegate.mainWindowManager.hideMainWindow()
+                self.hide()
+                
+                // Show floating window with a small delay
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    appDelegate.floatingWindowController.show(appDelegate: appDelegate)
+                }
+            } else {
+                // Use the standard switchMode for returning to menu bar
+                appDelegate.switchMode(to: newMode)
+            }
+        }
+    }
+    
+    // Method to handle opacity change selection
+    @objc func setOpacity(_ sender: NSMenuItem) {
+        let percentage = Double(sender.tag)
+        let newOpacity = percentage / 100.0
+        
+        print("MenuBarController: Setting opacity to \(percentage)%")
+        
+        // Update the selected menu item
+        if let opacitySubmenu = sender.menu {
+            for item in opacitySubmenu.items {
+                item.state = (item.tag == sender.tag) ? .on : .off
+            }
+        }
+        
+        // Save the new opacity
+        menuBarOpacity = newOpacity
+        UserDefaults.standard.set(newOpacity, forKey: "menuBarOpacity")
+        UserDefaults.standard.synchronize() // Force immediate save
+        
+        // Update the display to apply new opacity
+        if let devices = pingManager?.devices {
+            updateStatusItem(with: devices)
+        }
+        
+        // Also update button opacity directly
+        statusItem?.button?.alphaValue = CGFloat(newOpacity)
+    }
+    
+    @objc func showSettings() {
+        print("MenuBarController: showSettings action triggered")
+        if let appDelegate = NSApp.delegate as? AppDelegate {
+            appDelegate.openSettings()
+        }
+    }
+    
+    @objc func quitApp() {
+        print("MenuBarController: quitApp action triggered")
+        cleanup()
+        NSApp.terminate(nil)
     }
 }

@@ -17,12 +17,7 @@ struct DeviceListView: View {
     @State private var documentToExport: DeviceListDocument?
     @State private var isExportingTxt: Bool = false // For TXT
     @State private var showingAddDeviceSheet = false
-    // @State private var newDeviceInput = "" // Not needed if sheet uses its own state
-    @State private var selectedMode = UserDefaults.standard.string(forKey: "preferredInterface") ?? "menuBar"
-    @Environment(\.openWindow) var openWindow
     @Environment(\.dismiss) var dismiss // For potential sheet dismissal
-    // @State private var showingImporter = false // Use showingFileImporter
-    // @State private var showingModeSelector = false // Not used
     @State private var showingAlert = false // Keep for import/export status
     @State private var alertMessage = "" // Keep for import/export status
 
@@ -30,9 +25,18 @@ struct DeviceListView: View {
     @State private var currentInterval: Double = 5.0 // Default, will be updated
     @State private var intervalString: String = "5" // For the text field binding
     // --- End Interval State ---
-
-    // Removed unused binding: private var currentMode: Binding<String> { ... }
-
+    
+    // Computed property to bind to the mode selector
+    private var selectedMode: Binding<String> {
+        Binding(
+            get: { self.appDelegate.currentMode },
+            set: { newMode in 
+                print("DeviceListView: Mode picker changed to \(newMode). Requesting switch.")
+                self.appDelegate.switchMode(to: newMode)
+            }
+        )
+    }
+    
     var selectedIndices: [Int] {
         selectedDeviceIDs.compactMap { id in
             pingManager.devices.firstIndex(where: { $0.id == id })
@@ -46,19 +50,97 @@ struct DeviceListView: View {
      }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // Interval Control (Top)
-            pingIntervalControl
-                .padding([.horizontal, .top])
-
-            Divider()
-
-            // Remove Device List Header (or just the button)
-            // deviceListHeader.padding(.horizontal)
+        DeviceListMainContent(
+            pingIntervalControl: AnyView(pingIntervalControl),
+            deviceListHeader: AnyView(deviceListHeader),
+            deviceList: AnyView(deviceListContent),
+            listManagementButtons: AnyView(listManagementButtons),
+            bottomControls: AnyView(bottomControls)
+        )
+        .frame(minWidth: 400)
+        .sheet(item: $deviceToEdit) { device in
+            DeviceEditView(device: device) { editedDevice in
+                pingManager.updateDevice(device: editedDevice)
+            }
+        }
+        .fileImporter(
+            isPresented: $showingFileImporter,
+            allowedContentTypes: [.plainText, .commaSeparatedText, .rtf],
+            allowsMultipleSelection: false
+        ) { result in
+            handleImportResult(result)
+        }
+        .background {
+            Color.clear
+                .alert("Error", isPresented: $showingErrorAlert, presenting: importError) { _ in
+                    Button("OK", role: .cancel) {}
+                } message: { error in
+                    Text(error)
+                }
+                .fileExporter(
+                    isPresented: $isExporting,
+                    document: documentToExport,
+                    contentType: UTType.commaSeparatedText,
+                    defaultFilename: "MultiPing_Devices.csv"
+                ) { result in
+                    handleExportResult(result, type: "CSV")
+                }
+                .fileExporter(
+                    isPresented: $isExportingTxt,
+                    document: documentToExport,
+                    contentType: UTType.plainText,
+                    defaultFilename: "MultiPing_Devices.txt"
+                ) { result in
+                    handleExportResult(result, type: "TXT")
+                }
+        }
+        .onAppear {
+            // Load interval and set string for TextField
+            currentInterval = Double(pingManager.pingInterval)
+            intervalString = String(pingManager.pingInterval)
+            print("DeviceListView appeared. Initial ping interval loaded: \(currentInterval)s")
+        }
+    }
+    
+    // Main content container to simplify the body
+    private struct DeviceListMainContent: View {
+        let pingIntervalControl: AnyView
+        let deviceListHeader: AnyView
+        let deviceList: AnyView
+        let listManagementButtons: AnyView
+        let bottomControls: AnyView
+        
+        var body: some View {
+            VStack(alignment: .leading, spacing: 8) {
+                pingIntervalControl
+                    .padding([.horizontal, .top])
+                
+                Divider()
+                
+                deviceListHeader
+                    .padding(.horizontal)
+                    .padding(.bottom, 5)
+                
+                deviceList
+                
+                listManagementButtons
+                    .padding(.horizontal)
+                
+                Divider()
+                
+                bottomControls
+                    .padding(.horizontal)
+                    .padding(.bottom)
+            }
+        }
+    }
+    
+    // Extracted subviews
+    private var deviceListHeader: AnyView {
+        AnyView(
             HStack {
                 Text("Devices").font(.title2)
                 Spacer()
-                // Add edit button for selected device
                 Button("Edit") {
                     if selectedDeviceIDs.count == 1, 
                        let selectedID = selectedDeviceIDs.first,
@@ -67,14 +149,16 @@ struct DeviceListView: View {
                     }
                 }
                 .disabled(selectedDeviceIDs.count != 1)
-            }.padding(.horizontal)
-             .padding(.bottom, 5)
-
-            // Device List
+            }
+        )
+    }
+    
+    private var deviceListContent: AnyView {
+        AnyView(
             List(selection: $selectedDeviceIDs) {
                 ForEach(pingManager.devices) { device in
                     DeviceRowView(device: device)
-                        .contentShape(Rectangle()) // Ensure entire row is tappable
+                        .contentShape(Rectangle())
                         .contextMenu {
                             Button("Edit") {
                                 deviceToEdit = device
@@ -86,13 +170,16 @@ struct DeviceListView: View {
                             }
                         }
                 }
-                .onMove(perform: moveDevices) // Add move handler
+                .onMove(perform: moveDevices)
             }
-            .listStyle(.plain) // Use plain style
-            .frame(maxWidth: .infinity, maxHeight: .infinity) // Tell list to expand
-            .onDeleteCommand(perform: deleteSelected) // macOS delete command
-
-            // List Management Buttons
+            .listStyle(.plain)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onDeleteCommand(perform: deleteSelected)
+        )
+    }
+    
+    private var listManagementButtons: AnyView {
+        AnyView(
             ListManagementButtonsView(
                 selectedIDs: selectedDeviceIDs,
                 canMoveUp: canMoveSelectionUp,
@@ -101,18 +188,17 @@ struct DeviceListView: View {
                 moveUpAction: moveSelectedUp,
                 moveDownAction: moveSelectedDown
             )
-            .padding(.horizontal)
-
-            Divider()
-
-            // Bottom Controls Group
+        )
+    }
+    
+    private var bottomControls: AnyView {
+        AnyView(
             VStack(alignment: .leading, spacing: 8) {
-                // Re-add inline AddDeviceView
                 AddDeviceView(newDevice: $newDevice, addAction: addDevice)
-                    .padding(.bottom, 5) // Add some space below the add form
-
+                    .padding(.bottom, 5)
+                
                 Divider()
-
+                
                 ImportExportView(
                     pingManager: pingManager,
                     showingFileImporter: $showingFileImporter,
@@ -123,76 +209,12 @@ struct DeviceListView: View {
                         documentToExport = DeviceListDocument(devices: pingManager.devices)
                     }
                 )
-
+                
                 Divider()
-
+                
                 modeSelector
             }
-            .padding(.horizontal)
-            .padding(.bottom)
-            // End Bottom Controls Group
-        }
-        // Remove minHeight constraint temporarily
-        .frame(minWidth: 400)
-        // --- Sheet for Adding Devices (Now potentially unused, keep for edit?) ---
-         // Keep sheet for editing
-         .sheet(item: $deviceToEdit) { device in
-            DeviceEditView(device: device) { editedDevice in
-                pingManager.updateDevice(updatedDevice: editedDevice)
-            }
-        }
-        // --- File Importer ---
-        .fileImporter(
-            isPresented: $showingFileImporter,
-            allowedContentTypes: [.plainText, .commaSeparatedText, .rtf], // Keep supported types
-            allowsMultipleSelection: false
-        ) { result in
-            handleImportResult(result)
-        }
-        // --- File Exporters and Alerts (in background) ---
-        .background {
-            Color.clear // Or specific background
-                .alert("Error", isPresented: $showingErrorAlert, presenting: importError) { _ in
-                    Button("OK", role: .cancel) {}
-                } message: { error in
-                    Text(error)
-                }
-                .fileExporter( // CSV Exporter
-                    isPresented: $isExporting,
-                    document: documentToExport,
-                    contentType: UTType.commaSeparatedText,
-                    defaultFilename: "MultiPing_Devices.csv"
-                ) { result in
-                    handleExportResult(result, type: "CSV")
-                }
-                .fileExporter( // TXT Exporter
-                    isPresented: $isExportingTxt,
-                    document: documentToExport,
-                    contentType: UTType.plainText,
-                    defaultFilename: "MultiPing_Devices.txt"
-                ) { result in
-                    handleExportResult(result, type: "TXT")
-                }
-        }
-        // --- Initial Setup ---
-        .onAppear {
-            // Load interval and set string for TextField
-            currentInterval = pingManager.pingInterval
-            intervalString = String(Int(currentInterval))
-            print("DeviceListView appeared. Initial ping interval loaded: \(currentInterval)s")
-
-            // Ensure Picker reflects actual mode
-            selectedMode = appDelegate.currentMode
-            print("DeviceListView appeared. Current mode from delegate: \(appDelegate.currentMode)")
-
-            // Initial ping (optional, PingManager might handle this)
-            // pingManager.pingAll()
-        }
-        // --- Mode Change Handling ---
-        .onChange(of: selectedMode) { newMode in // Use macOS 13 compatible syntax
-            print("DeviceListView: Mode picker changed to \(newMode). Requesting switch.")
-            appDelegate.switchMode(to: newMode)
-        }
+        )
     }
 
     // MARK: - Subviews (Restored Structure + Interval)
@@ -215,7 +237,7 @@ struct DeviceListView: View {
     private var modeSelector: some View {
         HStack {
             Text("Display Mode:")
-            Picker("Mode", selection: $selectedMode) { // Added label for clarity
+            Picker("Mode", selection: selectedMode) { // Added label for clarity
                 Text("Menu Bar").tag("menuBar")
                 Text("Floating Window").tag("floatingWindow")
             }
@@ -413,6 +435,12 @@ struct DeviceListView: View {
             pingManager.updatePingInterval(5.0)
             intervalString = "5"
         }
+        
+        // Ensure the ping timer is running with the updated interval
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            print("DeviceListView: Ensuring ping timer is running with interval: \(self.pingManager.pingInterval)s")
+            self.pingManager.startPingTimer()
+        }
     }
 } // End DeviceListView
 
@@ -577,6 +605,7 @@ struct AddDeviceView: View {
     @ObservedObject private var pingManager = PingManager.shared
     @State private var showingDuplicateAlert = false
     @State private var showingInvalidIPAlert = false
+    @Environment(\.openWindow) private var openWindow
     
     // Check for duplicate
     private func isDuplicate(_ ip: String) -> Bool {
@@ -620,14 +649,23 @@ struct AddDeviceView: View {
             ))
             .textFieldStyle(RoundedBorderTextFieldStyle())
 
-            Button(action: validateAndAdd) {
-                Text("Add")
-                    // Ensure button spans width and is styled
-                    .frame(maxWidth: .infinity)
-                    .buttonStyle(.borderedProminent) // Apply prominent style
+            VStack(spacing: 5) {
+                Button(action: validateAndAdd) {
+                    Text("Add")
+                        // Ensure button spans width and is styled
+                        .frame(maxWidth: .infinity)
+                }
+                // Disable button if name or IP is empty
+                .disabled(newDevice.name.isEmpty || newDevice.ipAddress.isEmpty)
+                
+                // Add Find Devices button
+                Button(action: {
+                    openWindow(id: "findDevices")
+                }) {
+                    Text("Find Devices")
+                        .frame(maxWidth: .infinity)
+                }
             }
-            // Disable button if name or IP is empty
-            .disabled(newDevice.name.isEmpty || newDevice.ipAddress.isEmpty)
         }
         .alert("Duplicate IP Address", isPresented: $showingDuplicateAlert) {
             Button("OK", role: .cancel) {}

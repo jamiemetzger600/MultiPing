@@ -60,6 +60,8 @@ struct SimplifiedDeviceView: View {
     @ObservedObject var pingManager = PingManager.shared
     @State private var alwaysOnTop = UserDefaults.standard.bool(forKey: "alwaysOnTop")
     @State private var showNotes = false
+    @State private var opacity: Double = UserDefaults.standard.double(forKey: "floatingWindowOpacity")
+    @State private var showingOpacityControls = false
     weak var windowRef: NSWindow?
     
     // Add an observed object constructor that sets up notification handling
@@ -71,6 +73,12 @@ struct SimplifiedDeviceView: View {
         NotificationCenter.default.addObserver(forName: .deviceListChanged, object: nil, queue: .main) { _ in
             // This will trigger a view refresh since pingManager is an @ObservedObject
             print("SimplifiedDeviceView: Device list changed notification received")
+        }
+        
+        // Initialize opacity if needed
+        let savedOpacity = UserDefaults.standard.double(forKey: "floatingWindowOpacity")
+        if savedOpacity == 0 {
+            UserDefaults.standard.set(1.0, forKey: "floatingWindowOpacity")
         }
     }
     
@@ -86,10 +94,27 @@ struct SimplifiedDeviceView: View {
                         .toggleStyle(.checkbox)
                         .controlSize(.small)
                     Spacer()
+                    
+                    // Opacity Button
+                    Button(action: {
+                        showingOpacityControls.toggle()
+                    }) {
+                        Image(systemName: "slider.horizontal.3")
+                            .help("Adjust Window Opacity")
+                    }
+                    .buttonStyle(.borderless)
+                    
+                    // Always on Top Button
                     Button(action: {
                         alwaysOnTop.toggle()
                         UserDefaults.standard.set(alwaysOnTop, forKey: "alwaysOnTop")
-                        windowRef?.level = alwaysOnTop ? .floating : .normal
+                        
+                        // Use the new method to set always on top
+                        if let appDelegate = NSApp.delegate as? AppDelegate {
+                            if let floatingController = appDelegate.floatingWindowController as? FloatingWindowController {
+                                floatingController.setAlwaysOnTop(alwaysOnTop)
+                            }
+                        }
                     }) {
                         Image(systemName: alwaysOnTop ? "pin.fill" : "pin.slash")
                             .foregroundColor(alwaysOnTop ? .blue : .gray)
@@ -97,6 +122,7 @@ struct SimplifiedDeviceView: View {
                     }
                     .buttonStyle(.borderless)
                     
+                    // Menu Mode Button
                     Button(action: {
                         print("SimplifiedDeviceView: Gear icon clicked - switching to menuBar mode")
                         
@@ -106,10 +132,20 @@ struct SimplifiedDeviceView: View {
                             window.orderOut(nil)
                         }
                         
-                        // Then switch mode with a slight delay to ensure window is fully hidden
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            print("SimplifiedDeviceView: Now calling switchMode to menuBar")
-                            self.appDelegate.switchMode(to: "menuBar")
+                        // Ensure we properly switch to menu bar mode
+                        // First hide floating window and update mode
+                        appDelegate.floatingWindowController.hide()
+                        
+                        // Then ensure menu bar shows up before showing main window
+                        appDelegate.menuBarController.setup(with: appDelegate.pingManager)
+                        appDelegate.menuBarController.show()
+                        
+                        // Update the current mode
+                        appDelegate.currentMode = "menuBar"
+                        
+                        // Finally show the main window with a small delay
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                            appDelegate.mainWindowManager.showMainWindow()
                         }
                     }) {
                         Image(systemName: "gear")
@@ -118,6 +154,29 @@ struct SimplifiedDeviceView: View {
                     .buttonStyle(.borderless)
                 }
                 .padding(.bottom, 4)
+                
+                // Opacity Controls - Only show when requested
+                if showingOpacityControls {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Window Opacity: \(Int(opacity * 100))%")
+                            .font(.caption)
+                        
+                        Slider(value: $opacity, in: 0.1...1.0, step: 0.05) { editing in
+                            // Apply opacity changes immediately, not just when done editing
+                            // Save the value and apply it
+                            UserDefaults.standard.set(opacity, forKey: "floatingWindowOpacity")
+                            
+                            // Apply opacity via FloatingWindowController
+                            appDelegate.floatingWindowController.setOpacity(opacity)
+                            
+                            // Log the change
+                            print("SimplifiedDeviceView: Setting opacity to \(Int(opacity * 100))%")
+                        }
+                    }
+                    .padding(8)
+                    .background(Color.secondary.opacity(0.1))
+                    .cornerRadius(8)
+                }
                 
                 Divider()
                 
@@ -158,6 +217,14 @@ struct SimplifiedDeviceView: View {
         .frame(minHeight: 100)
         .onAppear {
             print("SimplifiedDeviceView: onAppear called")
+            
+            // Ensure opacity has an initial value
+            if opacity == 0 {
+                opacity = UserDefaults.standard.double(forKey: "floatingWindowOpacity")
+                if opacity == 0 {
+                    opacity = 1.0
+                }
+            }
         }
         .onDisappear {
             print("SimplifiedDeviceView: onDisappear called")
