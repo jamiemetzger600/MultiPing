@@ -1,5 +1,5 @@
 import Foundation
 
 @objc protocol ModeSwitching {
-    func switchMode(to mode: String)
+    func switchMode(to newMode: String)
 } 

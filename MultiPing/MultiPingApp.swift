@@ -281,11 +281,10 @@ struct MultiPingApp: App {
     // MARK: - Actions (Example: Open Settings/Main Window)
     @objc func openSettings() {
         print("AppDelegate: openSettings called")
-        // Ensure main window is visible when settings are opened
-        switchMode(to: "menuBar") // Switches mode, which should show main window
-        DispatchQueue.main.async {
-             NSApp.activate(ignoringOtherApps: true) // Bring app to front
-        }
+        // Show main window directly - settings are in the main interface
+        switchMode(to: "menuBar")
+        mainWindowManager.showMainWindow()
+        NSApp.activate(ignoringOtherApps: true)
     }
 
     // MARK: - Cleanup Logic
@@ -392,10 +391,7 @@ struct MultiPingApp: App {
     }
 }
 
-// MARK: - ModeSwitching Protocol (Ensure this matches definition)
-protocol ModeSwitching {
-    func switchMode(to newMode: String)
-}
+// ModeSwitching protocol is defined in Protocols.swift
 
 
 // MARK: - EnvironmentKey for AppDelegate Access

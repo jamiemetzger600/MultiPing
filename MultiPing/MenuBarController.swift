@@ -212,8 +212,12 @@ class MenuBarController: NSObject {
                     }
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
+                    .frame(minHeight: 32) // Ensure minimum height for menu items
                     .opacity(1.0) // Menu items should remain visible
                 )
+                
+                // Set explicit frame for the hosting view
+                capsuleRowView.frame = NSRect(x: 0, y: 0, width: 300, height: 32)
                 
                 let customItem = NSMenuItem()
                 customItem.view = capsuleRowView
@@ -329,13 +333,10 @@ class MenuBarController: NSObject {
     @objc func showDevices() {
         print("MenuBarController: showDevices action triggered")
         if let appDelegate = NSApp.delegate as? AppDelegate {
-            // Use switchMode instead of openWindow
+            // Direct window management - no async delays
             appDelegate.switchMode(to: "menuBar")
-            
-            // Ensure main window is shown - access directly since it's not optional
-            DispatchQueue.main.async {
-                appDelegate.mainWindowManager.showMainWindow()
-            }
+            appDelegate.mainWindowManager.showMainWindow()
+            NSApp.activate(ignoringOtherApps: true)
         }
     }
     

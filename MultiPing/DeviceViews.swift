@@ -60,7 +60,7 @@ struct DeviceListView: View {
         .frame(minWidth: 400)
         .sheet(item: $deviceToEdit) { device in
             DeviceEditView(device: device) { editedDevice in
-                pingManager.updateDevice(device: editedDevice)
+                pingManager.updateDevice(updatedDevice: editedDevice)
             }
         }
         .fileImporter(
