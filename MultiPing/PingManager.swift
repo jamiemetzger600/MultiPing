@@ -16,7 +16,9 @@ class PingManager: ObservableObject {
     @Published var pingInterval: Double = 5.0 // Default to 5 seconds
 
     private let fileURL: URL = {
-        let documents = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        guard let documents = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+            fatalError("Unable to access application support directory")
+        }
         let dir = documents.appendingPathComponent("MultiPing")
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
         return dir.appendingPathComponent("devices.json")

@@ -71,22 +71,11 @@ struct ModeSelectorView: View {
             .pickerStyle(.inline)
             .onChange(of: modeSelection.selectedMode) { newMode in
                 closeHandler()
-                switch newMode {
-                case "menuBar":
-                    MenuBarController.shared.setup(with: PingManager.shared)
-                case "floatingWindow":
-                    // FloatingWindowController.shared.show() // Commented out: Missing appDelegate argument
-                    print("ModeSelectorView: Floating window mode selected, but show() needs appDelegate.")
-                    // Need to get AppDelegate instance here to pass
-                    if let appDelegate = NSApp.delegate as? AppDelegate {
-                         appDelegate.switchMode(to: newMode) // Use switchMode instead for consistency
-                    } else {
-                         print("ModeSelectorView: ERROR - Could not get AppDelegate to switch mode.")
-                    }
-                case "cli":
-                    print("CLI mode selected - CLI runner not implemented yet.")
-                default:
-                    break
+                // Use centralized mode switching for all modes
+                if let appDelegate = NSApp.delegate as? AppDelegate {
+                    appDelegate.switchMode(to: newMode)
+                } else {
+                    print("ModeSelectorView: ERROR - Could not get AppDelegate to switch mode.")
                 }
             }
 

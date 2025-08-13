@@ -132,21 +132,8 @@ struct SimplifiedDeviceView: View {
                             window.orderOut(nil)
                         }
                         
-                        // Ensure we properly switch to menu bar mode
-                        // First hide floating window and update mode
-                        appDelegate.floatingWindowController.hide()
-                        
-                        // Then ensure menu bar shows up before showing main window
-                        appDelegate.menuBarController.setup(with: appDelegate.pingManager)
-                        appDelegate.menuBarController.show()
-                        
-                        // Update the current mode
-                        appDelegate.currentMode = "menuBar"
-                        
-                        // Finally show the main window with a small delay
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                            appDelegate.mainWindowManager.showMainWindow()
-                        }
+                        // Use centralized mode switching instead of duplicating logic
+                        appDelegate.switchMode(to: "menuBar")
                     }) {
                         Image(systemName: "gear")
                             .help("Switch to Menu Bar Mode")

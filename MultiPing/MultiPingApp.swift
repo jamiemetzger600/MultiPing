@@ -24,11 +24,19 @@ struct MultiPingApp: App {
                 .environmentObject(PingManager.shared)
                 .onAppear {
                     // Apply window controller to configure the window
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    // Use a more robust approach to find the window
+                    var attempts = 0
+                    func configureWindow() {
                         if let window = NSApp.windows.first(where: { $0.title == "Find Devices" || $0.title.contains("findDevices") }) {
                             FindDevicesWindowController.shared.configureFindDevicesWindow(window)
+                        } else if attempts < 5 {
+                            attempts += 1
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
+                                configureWindow()
+                            }
                         }
                     }
+                    configureWindow()
                 }
         }
         .windowStyle(.titleBar)
@@ -100,21 +108,18 @@ struct MultiPingApp: App {
         // Ensure floating window is hidden at launch
         floatingWindowController.hide()
         
-        // Show the window during first launch
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            // Small delay to ensure window is properly loaded
-            self.mainWindowManager.showMainWindow()
-            // Only apply menuBar state at launch
-            self.applyModeState(mode: "menuBar")
-            print("AppDelegate: Initial mode UI applied after delay")
-            
-            // After initial launch, then we can restore the saved preference
+        // Show the main window immediately
+        mainWindowManager.showMainWindow()
+        
+        // Apply menuBar state at launch
+        applyModeState(mode: "menuBar")
+        print("AppDelegate: Initial mode UI applied")
+        
+        // Restore saved preference after a brief delay to ensure UI is ready
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             let savedMode = UserDefaults.standard.string(forKey: "preferredInterface") ?? "menuBar"
             if savedMode != "menuBar" {
-                // Only switch if different from initial menuBar mode, and do it with a delay
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    self.switchMode(to: savedMode)
-                }
+                self.switchMode(to: savedMode)
             }
         }
     }
@@ -170,49 +175,11 @@ struct MultiPingApp: App {
 
         print("AppDelegate: Switching mode from \(currentMode) to \(newMode)")
         
-        // Use NSApp.windows to log current window state
-        print("Current windows:")
-        NSApp.windows.forEach { window in
-            print("- Window: \(window.title), visible: \(window.isVisible), level: \(window.level.rawValue)")
-        }
+        // Update mode immediately to prevent race conditions
+        currentMode = newMode
         
-        // Handle specific FROM->TO transitions to prevent problems
-        if currentMode == "floatingWindow" && newMode == "menuBar" {
-            // When going from floating to menu bar, first hide the floating window
-            print("AppDelegate: Special handling for floating->menuBar transition")
-            floatingWindowController.hide()
-            
-            // Wait a moment, then update mode and show main window
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.currentMode = newMode
-                self.menuBarController.setup(with: self.pingManager)
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.mainWindowManager.showMainWindow()
-                    NSApp.activate(ignoringOtherApps: true)
-                }
-            }
-        } 
-        else if currentMode == "menuBar" && newMode == "floatingWindow" {
-            // When going from menu bar to floating, first hide the main window
-            print("AppDelegate: Special handling for menuBar->floating transition")
-            mainWindowManager.hideMainWindow()
-            
-            // Wait a moment, then update mode and show floating window
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                self.currentMode = newMode
-                self.menuBarController.hide()
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    self.floatingWindowController.show(appDelegate: self)
-                }
-            }
-        }
-        else {
-            // For other transitions, use standard approach
-            currentMode = newMode
-            applyModeState(mode: newMode)
-        }
+        // Apply the new mode state synchronously
+        applyModeState(mode: newMode)
         
         print("====================================================================")
     }
@@ -225,34 +192,29 @@ struct MultiPingApp: App {
             switch mode {
             case "menuBar":
                 print("Applying menuBar state:")
-                // First ensure floating window is hidden
+                // Hide floating window first
                 self.floatingWindowController.hide()
                 
-                // Then show menu bar
+                // Setup and show menu bar
                 self.menuBarController.setup(with: self.pingManager)
-                self.menuBarController.show() // Explicitly show the menu bar
+                self.menuBarController.show()
                 
-                // Finally show main window with delay
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    self.mainWindowManager.showMainWindow()
-                    NSApp.activate(ignoringOtherApps: true)
-                }
+                // Show main window
+                self.mainWindowManager.showMainWindow()
+                NSApp.activate(ignoringOtherApps: true)
                 
             case "floatingWindow":
                 print("Applying floatingWindow state:")
-                // First hide main window
+                // Hide main window and menu bar
                 self.mainWindowManager.hideMainWindow()
-                
-                // Then hide menu bar
                 self.menuBarController.hide()
                 
-                // Finally show floating window with delay
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    self.floatingWindowController.show(appDelegate: self)
-                }
+                // Show floating window
+                self.floatingWindowController.show(appDelegate: self)
                 
             case "cli":
                 print("Applying cli state:")
+                // Hide all UI
                 self.floatingWindowController.hide()
                 self.menuBarController.hide()
                 self.mainWindowManager.hideMainWindow()
@@ -281,8 +243,8 @@ struct MultiPingApp: App {
         }
         print("Found cli.py at: \(scriptPath)")
 
-        // --- IMPORTANT: Ensure this Python path is correct for the target system ---
-        let pythonPath = "/Users/jamie/.pyenv/shims/python3" // Example Path - MUST BE VERIFIED
+        // Find Python path dynamically instead of hardcoding
+        let pythonPath = findPythonPath()
 
         // Use AppleScript to launch in Terminal
         let appleScriptSource = """
@@ -379,6 +341,54 @@ struct MultiPingApp: App {
         
         // Return false to let the system also perform its standard behavior
         return false
+    }
+    
+    // MARK: - Helper Methods
+    private func findPythonPath() -> String {
+        // Try to find python3 in common paths
+        let commonPaths = [
+            "/usr/bin/python3",
+            "/usr/local/bin/python3",
+            "/opt/homebrew/bin/python3",
+            "/usr/bin/python",
+            "/usr/local/bin/python"
+        ]
+        
+        for path in commonPaths {
+            if FileManager.default.fileExists(atPath: path) {
+                print("Found Python at: \(path)")
+                return path
+            }
+        }
+        
+        // Try to use 'which python3' command as fallback
+        let task = Process()
+        task.launchPath = "/usr/bin/which"
+        task.arguments = ["python3"]
+        
+        let pipe = Pipe()
+        task.standardOutput = pipe
+        task.standardError = Pipe()
+        
+        do {
+            try task.run()
+            task.waitUntilExit()
+            
+            if task.terminationStatus == 0 {
+                let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                if let output = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines),
+                   !output.isEmpty {
+                    print("Found Python via which: \(output)")
+                    return output
+                }
+            }
+        } catch {
+            print("Error running 'which python3': \(error)")
+        }
+        
+        // Fallback to default system python
+        print("Using fallback Python path: /usr/bin/python3")
+        return "/usr/bin/python3"
     }
 }
 

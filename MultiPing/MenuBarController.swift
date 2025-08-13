@@ -347,14 +347,8 @@ class MenuBarController: NSObject {
         // First approach: Use the window controller specifically created for this
         FindDevicesWindowController.shared.show()
         
-        // Second approach: Try to use the openWindow scene action directly
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            print("MenuBarController: Trying alternative method to open Find Devices window")
-            NSApp.sendAction(Selector(("openWindow:")), to: nil, from: "findDevices")
-            
-            // Ensure the app is activated
-            NSApp.activate(ignoringOtherApps: true)
-        }
+        // Ensure the app is activated
+        NSApp.activate(ignoringOtherApps: true)
     }
     
     // Method to toggle between menubar and floating window modes
@@ -365,22 +359,8 @@ class MenuBarController: NSObject {
             let newMode = appDelegate.currentMode == "menuBar" ? "floatingWindow" : "menuBar"
             print("MenuBarController: Switching mode to \(newMode)")
             
-            if newMode == "floatingWindow" {
-                // First update the current mode
-                appDelegate.currentMode = newMode
-                
-                // Hide menu bar and main window
-                appDelegate.mainWindowManager.hideMainWindow()
-                self.hide()
-                
-                // Show floating window with a small delay
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    appDelegate.floatingWindowController.show(appDelegate: appDelegate)
-                }
-            } else {
-                // Use the standard switchMode for returning to menu bar
-                appDelegate.switchMode(to: newMode)
-            }
+            // Use the centralized mode switching for both directions
+            appDelegate.switchMode(to: newMode)
         }
     }
     

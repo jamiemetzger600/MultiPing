@@ -13,7 +13,9 @@ class CLIRunner {
 
     private let fileURL: URL = {
         let manager = FileManager.default
-        let folder = manager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        guard let folder = manager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+            fatalError("CLIRunner: Unable to access application support directory")
+        }
         return folder.appendingPathComponent("com.yourcompany.MultiPing/devices.json")
     }()
 

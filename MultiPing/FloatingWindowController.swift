@@ -75,12 +75,10 @@ class FloatingWindowController {
             // Apply opacity
             applyOpacity()
             
-            // Ensure the window is actually visible
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                if !window.isVisible {
-                    print("FloatingWindowController: Window not visible after ordering front, trying again")
-                    window.orderFront(nil)
-                }
+            // Ensure the window is actually visible by making it key if needed
+            if !window.isVisible {
+                print("FloatingWindowController: Window not visible after ordering front, trying makeKeyAndOrderFront")
+                window.makeKeyAndOrderFront(nil)
             }
         } else {
             print("ERROR: Window is still nil after creation attempt")

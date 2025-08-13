@@ -315,7 +315,7 @@ struct DeviceListView: View {
 
 
     private func moveSelectedUp() {
-        guard !selectedIndices.isEmpty, selectedIndices.first! > 0 else { return }
+        guard !selectedIndices.isEmpty, let firstIndex = selectedIndices.first, firstIndex > 0 else { return }
         let indices = selectedIndices // Already sorted ascending
         var newSelectionIDs = Set<UUID>()
         // Move block from bottom up
@@ -437,10 +437,8 @@ struct DeviceListView: View {
         }
         
         // Ensure the ping timer is running with the updated interval
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            print("DeviceListView: Ensuring ping timer is running with interval: \(self.pingManager.pingInterval)s")
-            self.pingManager.startPingTimer()
-        }
+        print("DeviceListView: Ensuring ping timer is running with interval: \(self.pingManager.pingInterval)s")
+        self.pingManager.startPingTimer()
     }
 } // End DeviceListView
 
