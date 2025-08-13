@@ -50,13 +50,28 @@ struct DeviceListView: View {
      }
 
     var body: some View {
-        DeviceListMainContent(
-            pingIntervalControl: AnyView(pingIntervalControl),
-            deviceListHeader: AnyView(deviceListHeader),
-            deviceList: AnyView(deviceListContent),
-            listManagementButtons: AnyView(listManagementButtons),
-            bottomControls: AnyView(bottomControls)
-        )
+        VStack(alignment: .leading, spacing: 8) {
+            // Direct ping interval control to maintain binding
+            pingIntervalControl
+                .padding([.horizontal, .top])
+            
+            Divider()
+            
+            deviceListHeader
+                .padding(.horizontal)
+                .padding(.bottom, 5)
+            
+            deviceListContent
+            
+            listManagementButtons
+                .padding(.horizontal)
+            
+            Divider()
+            
+            bottomControls
+                .padding(.horizontal)
+                .padding(.bottom)
+        }
         .frame(minWidth: 400)
         .sheet(item: $deviceToEdit) { device in
             DeviceEditView(device: device) { editedDevice in
@@ -102,38 +117,7 @@ struct DeviceListView: View {
         }
     }
     
-    // Main content container to simplify the body
-    private struct DeviceListMainContent: View {
-        let pingIntervalControl: AnyView
-        let deviceListHeader: AnyView
-        let deviceList: AnyView
-        let listManagementButtons: AnyView
-        let bottomControls: AnyView
-        
-        var body: some View {
-            VStack(alignment: .leading, spacing: 8) {
-                pingIntervalControl
-                    .padding([.horizontal, .top])
-                
-                Divider()
-                
-                deviceListHeader
-                    .padding(.horizontal)
-                    .padding(.bottom, 5)
-                
-                deviceList
-                
-                listManagementButtons
-                    .padding(.horizontal)
-                
-                Divider()
-                
-                bottomControls
-                    .padding(.horizontal)
-                    .padding(.bottom)
-            }
-        }
-    }
+
     
     // Extracted subviews
     private var deviceListHeader: AnyView {

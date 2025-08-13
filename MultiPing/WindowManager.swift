@@ -84,19 +84,32 @@ class MainWindowManager: NSObject, NSWindowDelegate {
         if mainWindow == nil || isWindowClosed {
             print("WindowManager: Window is nil or closed. Attempting to find or create window.")
             
-            // Try to find an existing window first
-            if let existingWindow = NSApp.windows.first(where: { !$0.isMiniaturized && $0.title == "Devices" }) {
-                print("WindowManager: Found existing main window.")
+            // Try to find an existing window first - be more flexible with titles
+            let possibleTitles = ["Devices", "MultiPing", ""]
+            var foundWindow: NSWindow?
+            
+            for title in possibleTitles {
+                if let window = NSApp.windows.first(where: { 
+                    !$0.isMiniaturized && ($0.title == title || $0.title.contains("MultiPing") || $0.title.contains("Devices"))
+                }) {
+                    foundWindow = window
+                    break
+                }
+            }
+            
+            if let existingWindow = foundWindow {
+                print("WindowManager: Found existing main window with title: '\(existingWindow.title)'")
                 mainWindow = existingWindow
+                existingWindow.title = "Devices" // Standardize the title
                 isWindowClosed = false
-            } else if let anyWindow = NSApp.windows.first {
-                // Try to use any available window as a fallback
-                print("WindowManager: Using first available window as main window.")
+            } else if let anyWindow = NSApp.windows.first(where: { $0.contentView != nil }) {
+                // Try to use any available window with content as a fallback
+                print("WindowManager: Using first available content window as main window.")
                 mainWindow = anyWindow
                 anyWindow.title = "Devices" // Ensure the title is set correctly
                 configureMainWindow(anyWindow) // Reconfigure to ensure proper setup
             } else {
-                print("WindowManager: Cannot find any window to use as main window.")
+                print("WindowManager: Cannot find any suitable window to use as main window.")
                 // We would need to create a new window here, but that's more complex in AppKit
                 // and requires recreating the SwiftUI content view hierarchy
                 return
