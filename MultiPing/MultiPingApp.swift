@@ -27,7 +27,11 @@ struct MultiPingApp: App {
                     // Use a more robust approach to find the window
                     var attempts = 0
                     func configureWindow() {
-                        if let window = NSApp.windows.first(where: { $0.title == "Find Devices" || $0.title.contains("findDevices") }) {
+                        if let window = NSApp.windows.first(where: { 
+                            $0.title == "Find Devices" || 
+                            $0.title.contains("findDevices") ||
+                            $0.identifier?.rawValue == "findDevices"
+                        }) {
                             FindDevicesWindowController.shared.configureFindDevicesWindow(window)
                         } else if attempts < 5 {
                             attempts += 1
@@ -103,7 +107,7 @@ struct MultiPingApp: App {
         print("AppDelegate: Initial mode set to \(currentMode)")
 
         // Setup UI for menuBar mode (don't use saved preference at launch)
-        menuBarController.setup(with: pingManager) // Setup menu bar
+        menuBarController.setup(with: pingManager, appDelegate: self) // Pass self as AppDelegate
         
         // Ensure floating window is hidden at launch
         floatingWindowController.hide()
@@ -196,7 +200,7 @@ struct MultiPingApp: App {
                 self.floatingWindowController.hide()
                 
                 // Setup and show menu bar
-                self.menuBarController.setup(with: self.pingManager)
+                self.menuBarController.setup(with: self.pingManager, appDelegate: self)
                 self.menuBarController.show()
                 
                 // Show main window
@@ -223,7 +227,7 @@ struct MultiPingApp: App {
             default:
                 print("Applying default (menuBar) state due to unknown mode: \(mode)")
                 self.floatingWindowController.hide()
-                self.menuBarController.setup(with: self.pingManager)
+                self.menuBarController.setup(with: self.pingManager, appDelegate: self)
                 self.menuBarController.show()
                 self.mainWindowManager.showMainWindow()
             }

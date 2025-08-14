@@ -16,6 +16,7 @@ class MenuBarController: NSObject {
     private var statusItem: NSStatusItem?
     private var menu: NSMenu?
     private var pingManager: PingManager?
+    private var appDelegate: AppDelegate? // Add direct reference
     private var isCleanedUp = false
     private var cancellables = Set<AnyCancellable>()
     
@@ -86,17 +87,19 @@ class MenuBarController: NSObject {
         }
         menu = nil
         pingManager = nil
+        appDelegate = nil // Clear AppDelegate reference
         isCleanedUp = true
         print("MenuBarController: Cleanup finished")
     }
     
-    func setup(with pingManager: PingManager) {
+    func setup(with pingManager: PingManager, appDelegate: AppDelegate? = nil) {
         print("MenuBarController: Setting up with PingManager")
         
         // Clean up any previous setup
         cleanup()
         
         self.pingManager = pingManager
+        self.appDelegate = appDelegate // Store AppDelegate reference
         
         // Create status item in the menu bar
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -269,10 +272,10 @@ class MenuBarController: NSObject {
     private func buildMenu() -> NSMenu {
         let menu = NSMenu()
         
-        // Title item
-        let titleItem = menu.addItem(withTitle: "MultiPing", action: nil, keyEquivalent: "")
+        // Title item with version number
+        let titleItem = menu.addItem(withTitle: "MultiPing v1.6", action: nil, keyEquivalent: "")
         titleItem.attributedTitle = NSAttributedString(
-            string: "MultiPing",
+            string: "MultiPing v1.6",
             attributes: [
                 .font: NSFont.menuFont(ofSize: 14),
                 .foregroundColor: NSColor.labelColor
@@ -319,9 +322,9 @@ class MenuBarController: NSObject {
         // Add a separator before app control items
         menu.addItem(NSMenuItem.separator())
         
-        // Settings option
-        let settingsItem = menu.addItem(withTitle: "Settings...", action: #selector(showSettings), keyEquivalent: ",")
-        settingsItem.target = self
+        // Feature Request option
+        let featureRequestItem = menu.addItem(withTitle: "Feature Request", action: #selector(sendFeatureRequest), keyEquivalent: "")
+        featureRequestItem.target = self
         
         // Quit option
         let quitItem = menu.addItem(withTitle: "Quit", action: #selector(quitApp), keyEquivalent: "q")
@@ -332,37 +335,68 @@ class MenuBarController: NSObject {
     
     @objc func showDevices() {
         print("MenuBarController: showDevices action triggered")
-        if let appDelegate = NSApp.delegate as? AppDelegate {
-            // Direct window management - no async delays
-            appDelegate.switchMode(to: "menuBar")
-            appDelegate.mainWindowManager.showMainWindow()
-            NSApp.activate(ignoringOtherApps: true)
+        
+        // Get the app delegate from our stored reference
+        guard let appDelegate = self.appDelegate else {
+            print("MenuBarController: ERROR - No AppDelegate reference stored")
+            return
         }
+        
+        print("MenuBarController: Successfully got AppDelegate, switching to menuBar mode")
+        
+        // Direct window management - no async delays
+        appDelegate.switchMode(to: "menuBar")
+        
+        print("MenuBarController: Mode switched, now showing main window")
+        appDelegate.mainWindowManager.showMainWindow()
+        
+        print("MenuBarController: Activating application")
+        NSApp.activate(ignoringOtherApps: true)
+        
+        print("MenuBarController: showDevices action completed")
     }
     
     @objc func showFindDevicesWindow() {
         print("MenuBarController: showFindDevicesWindow action triggered")
         
-        // Try multiple approaches to ensure the window opens
+        // Get the app delegate from our stored reference
+        guard let appDelegate = self.appDelegate else {
+            print("MenuBarController: ERROR - No AppDelegate reference stored")
+            return
+        }
         
-        // First approach: Use the window controller specifically created for this
-        FindDevicesWindowController.shared.show()
+        print("MenuBarController: Successfully got AppDelegate, opening Find Devices window directly")
+        
+        // Don't switch modes - just open the Find Devices window directly
+        // Use the window controller specifically created for this
+        print("MenuBarController: Calling FindDevicesWindowController.shared.show(appDelegate:)")
+        FindDevicesWindowController.shared.show(appDelegate: appDelegate)
         
         // Ensure the app is activated
+        print("MenuBarController: Activating application")
         NSApp.activate(ignoringOtherApps: true)
+        
+        print("MenuBarController: showFindDevicesWindow action completed")
     }
     
     // Method to toggle between menubar and floating window modes
     @objc func toggleFloatingWindow() {
         print("MenuBarController: toggleFloatingWindow action triggered")
-        if let appDelegate = NSApp.delegate as? AppDelegate {
-            // If current mode is menuBar, switch to floatingWindow and vice versa
-            let newMode = appDelegate.currentMode == "menuBar" ? "floatingWindow" : "menuBar"
-            print("MenuBarController: Switching mode to \(newMode)")
-            
-            // Use the centralized mode switching for both directions
-            appDelegate.switchMode(to: newMode)
+        
+        // Get the app delegate from our stored reference
+        guard let appDelegate = self.appDelegate else {
+            print("MenuBarController: ERROR - No AppDelegate reference stored")
+            return
         }
+        
+        // If current mode is menuBar, switch to floatingWindow and vice versa
+        let newMode = appDelegate.currentMode == "menuBar" ? "floatingWindow" : "menuBar"
+        print("MenuBarController: Switching mode to \(newMode)")
+        
+        // Use the centralized mode switching for both directions
+        appDelegate.switchMode(to: newMode)
+        
+        print("MenuBarController: toggleFloatingWindow action completed")
     }
     
     // Method to handle opacity change selection
@@ -393,16 +427,43 @@ class MenuBarController: NSObject {
         statusItem?.button?.alphaValue = CGFloat(newOpacity)
     }
     
-    @objc func showSettings() {
-        print("MenuBarController: showSettings action triggered")
-        if let appDelegate = NSApp.delegate as? AppDelegate {
-            appDelegate.openSettings()
-        }
-    }
-    
     @objc func quitApp() {
         print("MenuBarController: quitApp action triggered")
         cleanup()
         NSApp.terminate(nil)
+    }
+    
+    @objc func sendFeatureRequest() {
+        print("MenuBarController: sendFeatureRequest action triggered")
+        
+        // Create email URL with subject and body
+        let subject = "MultiPing Feature Request"
+        let body = "Hi Jamie,\n\nI have a feature request for MultiPing:\n\n[Please describe your feature request here]\n\nThanks!"
+        
+        // Encode the subject and body for URL
+        let encodedSubject = subject.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let encodedBody = body.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        
+        // Create the mailto URL
+        let mailtoURL = "mailto:Jamiemetzger@gmail.com?subject=\(encodedSubject)&body=\(encodedBody)"
+        
+        print("MenuBarController: Opening email with URL: \(mailtoURL)")
+        
+        // Open the email client
+        if let url = URL(string: mailtoURL) {
+            NSWorkspace.shared.open(url)
+            print("MenuBarController: Email client opened successfully")
+        } else {
+            print("MenuBarController: ERROR - Could not create valid mailto URL")
+            
+            // Fallback: just open the default email client
+            let fallbackURL = "mailto:Jamiemetzger@gmail.com"
+            if let fallbackURL = URL(string: fallbackURL) {
+                NSWorkspace.shared.open(fallbackURL)
+                print("MenuBarController: Fallback email client opened")
+            }
+        }
+        
+        print("MenuBarController: sendFeatureRequest action completed")
     }
 }

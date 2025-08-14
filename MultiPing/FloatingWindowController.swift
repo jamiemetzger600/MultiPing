@@ -24,6 +24,7 @@ class FloatingWindowController {
     static let shared = FloatingWindowController()
     private var window: NonActivatingPanel?
     private var windowDelegate: WindowDelegate?
+    var appDelegate: AppDelegate? // Make accessible to WindowDelegate
     var isVisible = false
     private let windowFrameKey = "FloatingWindowFrame"
     
@@ -40,6 +41,9 @@ class FloatingWindowController {
     
     func show(appDelegate: AppDelegate) {
         print("FloatingWindowController.show() called, window exists: \(window != nil), current isVisible: \(isVisible)")
+        
+        // Store the AppDelegate reference
+        self.appDelegate = appDelegate
         
         // If window was closed by the user (e.g., exists but is nil), recreate it
         if window == nil || (window != nil && !window!.isVisible) {
@@ -177,8 +181,11 @@ class FloatingWindowController {
             
             // Switch back to menu bar mode
             DispatchQueue.main.async {
-                if let appDelegate = NSApp.delegate as? AppDelegate {
+                if let appDelegate = self.appDelegate {
+                    print("FloatingWindowController: Switching to menu bar mode via checkWindowVisibility")
                     appDelegate.switchMode(to: "menuBar")
+                } else {
+                    print("FloatingWindowController: ERROR - No AppDelegate reference in checkWindowVisibility")
                 }
             }
         }
@@ -232,7 +239,7 @@ class FloatingWindowController {
             print("Set frameAutosaveName to 'floatingDeviceWindow'")
             
             // Set a distinct title for easier debugging
-            panel.title = "Device Status"
+            panel.title = "MultiPing - Floating Status"
             panel.isReleasedWhenClosed = false
         }
 
@@ -308,10 +315,13 @@ class WindowDelegate: NSObject, NSWindowDelegate {
         controller?.isVisible = false
         
         // Switch back to menu bar mode when the floating window is closed
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [self] in
             print("FloatingWindowController: Window was closed by user, switching to menu bar mode")
-            if let appDelegate = NSApp.delegate as? AppDelegate {
+            if let appDelegate = controller?.appDelegate {
+                print("FloatingWindowController: Successfully got AppDelegate, switching to menuBar mode")
                 appDelegate.switchMode(to: "menuBar")
+            } else {
+                print("FloatingWindowController: ERROR - No AppDelegate reference available")
             }
         }
     }

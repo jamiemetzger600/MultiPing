@@ -27,7 +27,7 @@ class MainWindowManager: NSObject, NSWindowDelegate {
     func configureMainWindow(_ window: NSWindow) {
         print("WindowManager: Configuring main window reference.")
         self.mainWindow = window
-        window.title = "Devices"
+        window.title = "MultiPing - Devices"
         
         // Set delegate to self to catch window close events
         window.delegate = self
@@ -80,38 +80,18 @@ class MainWindowManager: NSObject, NSWindowDelegate {
             print("WindowManager: Window title: '\(window.title)', visible: \(window.isVisible), miniaturized: \(window.isMiniaturized)")
         }
         
-        // If window is closed/nil but we have a saved frame, we need to recreate it
+        // Simplified window finding logic
         if mainWindow == nil || isWindowClosed {
-            print("WindowManager: Window is nil or closed. Attempting to find or create window.")
+            print("WindowManager: Window is nil or closed. Finding main window.")
             
-            // Try to find an existing window first - be more flexible with titles
-            let possibleTitles = ["Devices", "MultiPing", ""]
-            var foundWindow: NSWindow?
-            
-            for title in possibleTitles {
-                if let window = NSApp.windows.first(where: { 
-                    !$0.isMiniaturized && ($0.title == title || $0.title.contains("MultiPing") || $0.title.contains("Devices"))
-                }) {
-                    foundWindow = window
-                    break
-                }
-            }
-            
-            if let existingWindow = foundWindow {
-                print("WindowManager: Found existing main window with title: '\(existingWindow.title)'")
-                mainWindow = existingWindow
-                existingWindow.title = "Devices" // Standardize the title
+            // Look for the main window by title or content
+            if let window = findMainWindow() {
+                print("WindowManager: Found main window with title: '\(window.title)'")
+                mainWindow = window
+                window.title = "MultiPing - Devices" // Standardize the title
                 isWindowClosed = false
-            } else if let anyWindow = NSApp.windows.first(where: { $0.contentView != nil }) {
-                // Try to use any available window with content as a fallback
-                print("WindowManager: Using first available content window as main window.")
-                mainWindow = anyWindow
-                anyWindow.title = "Devices" // Ensure the title is set correctly
-                configureMainWindow(anyWindow) // Reconfigure to ensure proper setup
             } else {
-                print("WindowManager: Cannot find any suitable window to use as main window.")
-                // We would need to create a new window here, but that's more complex in AppKit
-                // and requires recreating the SwiftUI content view hierarchy
+                print("WindowManager: Cannot find main window. Cannot show.")
                 return
             }
         }
@@ -147,6 +127,31 @@ class MainWindowManager: NSObject, NSWindowDelegate {
         NSApp.activate(ignoringOtherApps: true)
         
         isWindowClosed = false
+    }
+    
+    // Simplified method to find the main window
+    private func findMainWindow() -> NSWindow? {
+        // First, try to find by exact title
+        if let window = NSApp.windows.first(where: { 
+            $0.title == "MultiPing - Devices" || 
+            $0.title == "Devices" ||
+            $0.title == "MultiPing"
+        }) {
+            return window
+        }
+        
+        // If no exact match, look for any window that might be the main window
+        // (not a panel, not the find devices window)
+        if let window = NSApp.windows.first(where: { 
+            !$0.isMiniaturized && 
+            $0.styleMask.contains(.titled) &&
+            $0.title != "Find Devices" &&
+            $0.contentView != nil
+        }) {
+            return window
+        }
+        
+        return nil
     }
     
     func hideMainWindow() {
