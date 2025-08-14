@@ -1,0 +1,12 @@
+🚀 MultiPing v1.6 - SUPER SIMPLE INSTALL
+=========================================
+
+📱 Just drag MultiPing.app to your Applications folder!
+
+Or double-click MultiPing.app to run it directly.
+
+That's it! No terminal, no commands, no complexity.
+
+📱 MultiPing will appear in your menubar (top-right)
+🎯 Click the menubar icon to access all features
+✅ Works like any normal Mac app
