@@ -8,13 +8,52 @@ WORKING_DIR="$(dirname "$BUNDLE_DIR")"
 echo "🚀 MultiPing v1.6 Installer"
 echo "=============================="
 echo ""
+echo "📝 This installer will create a detailed log file for troubleshooting."
+echo "   Log will be saved to: MultiPing-Installer.log"
+echo ""
+
+# Redirect all output to both console and log file
+exec > >(tee MultiPing-Installer.log) 2>&1
+
+echo "🚀 MultiPing v1.6 Installer (Logging Enabled)"
+echo "=============================="
+echo ""
+
+# Enable detailed logging
+set -x
+
+echo "🔍 DEBUG INFO:"
+echo "  Script Directory: $SCRIPT_DIR"
+echo "  Bundle Directory: $BUNDLE_DIR"
+echo "  Working Directory: $WORKING_DIR"
+echo "  Current Directory: $(pwd)"
+echo "  Current User: $(whoami)"
+echo "  macOS Version: $(sw_vers -productVersion)"
+echo ""
 
 # Change to the working directory where the installer app is located
-cd "$BUNDLE_DIR"
+cd "$WORKING_DIR"
+echo "  Changed to: $(pwd)"
+echo ""
 
 # Check if we're in the right place
+echo "🔍 CHECKING FILES:"
+echo "  Looking for MultiPing-v1.6-release in: $(pwd)"
+echo "  Directory contents:"
+ls -la
+echo ""
+
 if [ ! -f "MultiPing-v1.6-release" ]; then
     echo "❌ Error: MultiPing executable not found!"
+    echo ""
+    echo "🔍 TROUBLESHOOTING INFO:"
+    echo "  Expected file: MultiPing-v1.6-release"
+    echo "  Current directory: $(pwd)"
+    echo "  Directory contents:"
+    ls -la
+    echo ""
+    echo "  Parent directory contents:"
+    ls -la ..
     echo ""
     echo "Please make sure this installer is in the same folder as:"
     echo "  - MultiPing-v1.6-release"
@@ -27,7 +66,15 @@ if [ ! -f "MultiPing-v1.6-release" ]; then
 fi
 
 echo "📝 Making MultiPing executable..."
+echo "  File permissions before:"
+ls -la MultiPing-v1.6-release
+echo ""
+
 chmod +x MultiPing-v1.6-release
+
+echo "  File permissions after:"
+ls -la MultiPing-v1.6-release
+echo ""
 
 # Check if it's now executable
 if [ -x "MultiPing-v1.6-release" ]; then
