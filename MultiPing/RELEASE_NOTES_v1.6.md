@@ -25,6 +25,14 @@
 - No additional dependencies required
 
 ## 🚀 Installation
+
+### Option 1: Clickable Installer (Recommended)
+1. Download `MultiPing-v1.6-Release-With-Installer.zip`
+2. Extract and double-click `MultiPing-Installer.app`
+3. Follow the prompts in the terminal window
+4. MultiPing is ready to use!
+
+### Option 2: Command Line Installation
 1. Download `MultiPing-v1.6-release`
 2. Make it executable: `chmod +x MultiPing-v1.6-release`
 3. Run: `./MultiPing-v1.6-release`
