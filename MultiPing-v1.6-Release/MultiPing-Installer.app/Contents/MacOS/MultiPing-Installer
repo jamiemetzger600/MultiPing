@@ -1,99 +1,43 @@
 #!/bin/bash
 
-# Get the directory where this app bundle is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BUNDLE_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
-WORKING_DIR="$(dirname "$BUNDLE_DIR")"
-
+# Simple, clean MultiPing v1.6 installer
 echo "🚀 MultiPing v1.6 Installer"
 echo "=============================="
 echo ""
-echo "📝 This installer will create a detailed log file for troubleshooting."
-echo "   Log will be saved to: MultiPing-Installer.log"
-echo ""
 
-# Redirect all output to both console and log file
-exec > >(tee MultiPing-Installer.log) 2>&1
+# Get the directory where this installer is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WORKING_DIR="$(dirname "$SCRIPT_DIR")"
 
-echo "🚀 MultiPing v1.6 Installer (Logging Enabled)"
-echo "=============================="
-echo ""
-
-# Enable detailed logging
-set -x
-
-echo "🔍 DEBUG INFO:"
-echo "  Script Directory: $SCRIPT_DIR"
-echo "  Bundle Directory: $BUNDLE_DIR"
-echo "  Working Directory: $WORKING_DIR"
-echo "  Current Directory: $(pwd)"
-echo "  Current User: $(whoami)"
-echo "  macOS Version: $(sw_vers -productVersion)"
-echo ""
-
-# Change to the working directory where the installer app is located
+# Change to the working directory
 cd "$WORKING_DIR"
-echo "  Changed to: $(pwd)"
-echo ""
 
-# Check if we're in the right place
-echo "🔍 CHECKING FILES:"
-echo "  Looking for MultiPing-v1.6-release in: $(pwd)"
-echo "  Directory contents:"
-ls -la
-echo ""
-
+# Check if MultiPing executable exists
 if [ ! -f "MultiPing-v1.6-release" ]; then
     echo "❌ Error: MultiPing executable not found!"
     echo ""
-    echo "🔍 TROUBLESHOOTING INFO:"
-    echo "  Expected file: MultiPing-v1.6-release"
-    echo "  Current directory: $(pwd)"
-    echo "  Directory contents:"
-    ls -la
-    echo ""
-    echo "  Parent directory contents:"
-    ls -la ..
-    echo ""
-    echo "Please make sure this installer is in the same folder as:"
-    echo "  - MultiPing-v1.6-release"
-    echo "  - install.sh"
-    echo "  - RELEASE_NOTES_v1.6.md"
+    echo "Please make sure this installer is in the same folder as MultiPing-v1.6-release"
     echo ""
     echo "Press any key to close..."
     read -n 1
     exit 1
 fi
 
-echo "📝 Making MultiPing executable..."
-echo "  File permissions before:"
-ls -la MultiPing-v1.6-release
-echo ""
-
+echo "📝 Installing MultiPing..."
 chmod +x MultiPing-v1.6-release
 
-echo "  File permissions after:"
-ls -la MultiPing-v1.6-release
-echo ""
-
-# Check if it's now executable
 if [ -x "MultiPing-v1.6-release" ]; then
-    echo "✅ MultiPing is now executable!"
+    echo "✅ Installation complete!"
     echo ""
     echo "🎯 To run MultiPing:"
     echo "   ./MultiPing-v1.6-release"
     echo ""
     echo "📱 MultiPing will appear in your menubar (top-right of screen)"
-    echo "   Click the menubar icon to access all features"
-    echo ""
-    echo "📖 For more information, see RELEASE_NOTES_v1.6.md"
-    echo ""
-    echo "🚀 Installation complete! You can now run MultiPing."
     echo ""
     echo "Press any key to close..."
     read -n 1
 else
-    echo "❌ Error: Failed to make MultiPing executable"
+    echo "❌ Installation failed"
     echo ""
     echo "Press any key to close..."
     read -n 1
