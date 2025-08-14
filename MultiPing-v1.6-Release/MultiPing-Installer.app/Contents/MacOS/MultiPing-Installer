@@ -1,0 +1,54 @@
+#!/bin/bash
+
+# Get the directory where this app bundle is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+BUNDLE_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+WORKING_DIR="$(dirname "$BUNDLE_DIR")"
+
+echo "🚀 MultiPing v1.6 Installer"
+echo "=============================="
+echo ""
+
+# Change to the working directory where the installer app is located
+cd "$BUNDLE_DIR"
+
+# Check if we're in the right place
+if [ ! -f "MultiPing-v1.6-release" ]; then
+    echo "❌ Error: MultiPing executable not found!"
+    echo ""
+    echo "Please make sure this installer is in the same folder as:"
+    echo "  - MultiPing-v1.6-release"
+    echo "  - install.sh"
+    echo "  - RELEASE_NOTES_v1.6.md"
+    echo ""
+    echo "Press any key to close..."
+    read -n 1
+    exit 1
+fi
+
+echo "📝 Making MultiPing executable..."
+chmod +x MultiPing-v1.6-release
+
+# Check if it's now executable
+if [ -x "MultiPing-v1.6-release" ]; then
+    echo "✅ MultiPing is now executable!"
+    echo ""
+    echo "🎯 To run MultiPing:"
+    echo "   ./MultiPing-v1.6-release"
+    echo ""
+    echo "📱 MultiPing will appear in your menubar (top-right of screen)"
+    echo "   Click the menubar icon to access all features"
+    echo ""
+    echo "📖 For more information, see RELEASE_NOTES_v1.6.md"
+    echo ""
+    echo "🚀 Installation complete! You can now run MultiPing."
+    echo ""
+    echo "Press any key to close..."
+    read -n 1
+else
+    echo "❌ Error: Failed to make MultiPing executable"
+    echo ""
+    echo "Press any key to close..."
+    read -n 1
+    exit 1
+fi
