@@ -1,4 +1,4 @@
-# MultiPing v1.5
+# MultiPing v1.6
 
 A macOS utility for monitoring multiple devices via ping with an elegant interface.
 
@@ -26,8 +26,16 @@ A macOS utility for monitoring multiple devices via ping with an elegant interfa
 
 ## Installation
 
+### Option 1: Clickable Installer (Recommended)
 1. Download the latest release from the releases page
-2. Move MultiPing.app to your Applications folder
+2. Extract `MultiPing-Installer.app` from the release package
+3. Double-click `MultiPing-Installer.app` to run the installation
+4. Follow the prompts in the terminal window
+5. MultiPing is ready to use!
+
+### Option 2: Manual Installation
+1. Download the latest release from the releases page
+2. Move `MultiPing.app` to your Applications folder
 3. When first launching, right-click and select "Open" to bypass Gatekeeper
 4. Grant necessary permissions when prompted
 
@@ -47,6 +55,17 @@ Printer,192.168.1.200,Office printer
 - Network access for ping functionality
 
 ## Version History
+
+### v1.6
+- **Major Menubar Fixes**: Fixed all menubar dropdown actions (Show Devices, Find Devices, Toggle Floating Window)
+- **Direct Find Devices Access**: "Find Devices on Network" now opens directly without intermediate steps
+- **Enhanced User Experience**: Removed unnecessary "Settings" menu item, added version number to menubar
+- **Feature Request Integration**: Added "Feature Request" option that opens email client
+- **Crash Prevention**: Fixed persistent crashes when opening/closing Find Devices window multiple times
+- **Network Scanning**: Restored full network scanning functionality in Find Devices window
+- **Clickable Installer**: Added MultiPing-Installer.app for easy double-click installation
+- **Improved Window Management**: Better persistence and reliability across all window types
+- **Streamlined Interface**: Cleaner menubar with working functionality and better user flow
 
 ### v1.5
 - Added adjustable opacity control for floating window
