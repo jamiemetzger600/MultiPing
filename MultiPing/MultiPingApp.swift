@@ -15,6 +15,7 @@ struct MultiPingApp: App {
             DeviceListView()
                 .environmentObject(appDelegate) // Pass the delegate
         }
+        .windowTitle("MultiPing - Devices")
         .windowStyle(.hiddenTitleBar) // Keep style
         
         // Add Find Devices Window
@@ -43,6 +44,7 @@ struct MultiPingApp: App {
                     configureWindow()
                 }
         }
+        .windowTitle("Find Devices")
         .windowStyle(.titleBar)
         .windowResizability(.contentMinSize)
         .defaultPosition(.center)
