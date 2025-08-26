@@ -273,9 +273,9 @@ class MenuBarController: NSObject {
         let menu = NSMenu()
         
         // Title item with version number
-        let titleItem = menu.addItem(withTitle: "MultiPing v1.6", action: nil, keyEquivalent: "")
+        let titleItem = menu.addItem(withTitle: "MultiPing v1.7 Final", action: nil, keyEquivalent: "")
         titleItem.attributedTitle = NSAttributedString(
-            string: "MultiPing v1.6",
+            string: "MultiPing v1.7 Final",
             attributes: [
                 .font: NSFont.menuFont(ofSize: 14),
                 .foregroundColor: NSColor.labelColor

@@ -1,0 +1,9 @@
+"/Users/jamiemetzger/MultiPing/MultiPing/MultiPingApp.swift":
+  abi-baseline-json: "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPing.abi.json"
+  diagnostics: "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPing-master.dia"
+  swiftsourceinfo: "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPing.swiftsourceinfo"
+  dependencies: "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPing-master.d"
+  objc-header: "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPing-Swift.h"
+  const-values: "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPing-master.swiftconstvalues"
+  swiftmodule: "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPing.swiftmodule"
+  swiftdoc: "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPing.swiftdoc"

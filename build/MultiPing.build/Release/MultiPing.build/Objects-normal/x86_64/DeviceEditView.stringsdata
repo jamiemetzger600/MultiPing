@@ -1,0 +1,52 @@
+{
+  "source": "/Users/jamiemetzger/MultiPing/MultiPing/DeviceEditView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Duplicate IP Address"
+      },
+      {
+        "comment": "",
+        "key": "Invalid IP Address"
+      },
+      {
+        "comment": "",
+        "key": "Edit Device"
+      },
+      {
+        "comment": "",
+        "key": "Name"
+      },
+      {
+        "comment": "",
+        "key": "IP Address"
+      },
+      {
+        "comment": "",
+        "key": "Note (Optional)"
+      },
+      {
+        "comment": "",
+        "key": "Cancel"
+      },
+      {
+        "comment": "",
+        "key": "Save"
+      },
+      {
+        "comment": "",
+        "key": "OK"
+      },
+      {
+        "comment": "",
+        "key": "Another device with IP address '%@' already exists."
+      },
+      {
+        "comment": "",
+        "key": "The IP address '%@' appears to be invalid. Please enter a valid IPv4 address or hostname."
+      }
+    ]
+  },
+  "version": 1
+}

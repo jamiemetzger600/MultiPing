@@ -1,0 +1,40 @@
+{
+  "source": "/Users/jamiemetzger/MultiPing/MultiPing/FindDevicesWindowController.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Find Network Devices"
+      },
+      {
+        "comment": "",
+        "key": "Close"
+      },
+      {
+        "comment": "",
+        "key": "Scanning network..."
+      },
+      {
+        "comment": "",
+        "key": "Stop Scan"
+      },
+      {
+        "comment": "",
+        "key": "Start Scan"
+      },
+      {
+        "comment": "",
+        "key": "Add Selected (%lld)"
+      },
+      {
+        "comment": "",
+        "key": "No devices found"
+      },
+      {
+        "comment": "",
+        "key": "Click 'Start Scan' to discover devices on your network"
+      }
+    ]
+  },
+  "version": 1
+}

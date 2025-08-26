@@ -1,0 +1,23 @@
+version: "Apple Swift version 5.10 (swiftlang-5.10.0.13 clang-1500.3.9.4)"
+options: "4b4d94bd6a7d311fc83536e9c52d842bdbcaa2395a60c01a9ec5a2179e0fe647"
+build_start_time: [1756232102, 434016000]
+build_end_time: [1756232107, 263358000]
+inputs:
+  "/Users/jamiemetzger/MultiPing/MultiPing/CLIRunner.swift": [1755110594, 175346945]
+  "/Users/jamiemetzger/MultiPing/MultiPing/ContentView.swift": [1755109120, 947724014]
+  "/Users/jamiemetzger/MultiPing/MultiPing/Device.swift": [1755109120, 947803764]
+  "/Users/jamiemetzger/MultiPing/MultiPing/DeviceEditView.swift": [1755109120, 948102637]
+  "/Users/jamiemetzger/MultiPing/MultiPing/DeviceListDocument.swift": [1755112905, 511257349]
+  "/Users/jamiemetzger/MultiPing/MultiPing/DeviceViews.swift": [1755113793, 731951292]
+  "/Users/jamiemetzger/MultiPing/MultiPing/FileImporter.swift": [1755109120, 948374510]
+  "/Users/jamiemetzger/MultiPing/MultiPing/FindDevicesWindowController.swift": [1755196691, 122301490]
+  "/Users/jamiemetzger/MultiPing/MultiPing/FloatingDeviceListView.swift": [1755109708, 863625994]
+  "/Users/jamiemetzger/MultiPing/MultiPing/FloatingWindowController.swift": [1755193952, 611721160]
+  "/Users/jamiemetzger/MultiPing/MultiPing/MenuBarController.swift": [1756232082, 367150475]
+  "/Users/jamiemetzger/MultiPing/MultiPing/ModeSelectorWindowController.swift": [1755110615, 265447421]
+  "/Users/jamiemetzger/MultiPing/MultiPing/MultiPingApp.swift": [1756230467, 120317625]
+  "/Users/jamiemetzger/MultiPing/MultiPing/NetworkScanner.swift": [1755113879, 773646373]
+  "/Users/jamiemetzger/MultiPing/MultiPing/PingManager.swift": [1755110580, 305313270]
+  "/Users/jamiemetzger/MultiPing/MultiPing/Protocols.swift": [1755112905, 527704885]
+  "/Users/jamiemetzger/MultiPing/MultiPing/WindowManager.swift": [1755192204, 545437213]
+  "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/DerivedSources/GeneratedAssetSymbols.swift": [1756232102, 252743448]
