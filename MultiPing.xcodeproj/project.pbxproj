@@ -3,66 +3,59 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 54;
 	objects = {
 
-/* Begin PBXContainerItemProxy section */
-		7DE12D592DA1D1650000F6A2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7DE12D422DA1D1640000F6A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7DE12D492DA1D1640000F6A2;
-			remoteInfo = MultiPing;
-		};
-		7DE12D632DA1D1650000F6A2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 7DE12D422DA1D1640000F6A2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 7DE12D492DA1D1640000F6A2;
-			remoteInfo = MultiPing;
-		};
-/* End PBXContainerItemProxy section */
+/* Begin PBXBuildFile section */
+		A001 /* MultiPingApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B001 /* MultiPingApp.swift */; };
+		A002 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = B002 /* Device.swift */; };
+		A003 /* DeviceViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B003 /* DeviceViews.swift */; };
+		A004 /* PingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B004 /* PingManager.swift */; };
+		A005 /* MenuBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B005 /* MenuBarController.swift */; };
+		A006 /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B006 /* WindowManager.swift */; };
+		A007 /* FloatingWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B007 /* FloatingWindowController.swift */; };
+		A008 /* FindDevicesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B008 /* FindDevicesWindowController.swift */; };
+		A009 /* NetworkScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B009 /* NetworkScanner.swift */; };
+		A010 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010 /* Protocols.swift */; };
+		A011 /* DeviceEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B011 /* DeviceEditView.swift */; };
+		A012 /* FloatingDeviceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B012 /* FloatingDeviceListView.swift */; };
+		A013 /* FileImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B013 /* FileImporter.swift */; };
+		A014 /* DeviceListDocument.swift in Sources */ = {isa = PBXBuildFile; fileRef = B014 /* DeviceListDocument.swift */; };
+		A015 /* ModeSelectorWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B015 /* ModeSelectorWindowController.swift */; };
+		A016 /* CLIRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B016 /* CLIRunner.swift */; };
+		A017 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B017 /* ContentView.swift */; };
+		A018 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B018 /* Media.xcassets */; };
+		A019 /* MultiPing.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = B019 /* MultiPing.entitlements */; };
+		A020 /* cli.py in Resources */ = {isa = PBXBuildFile; fileRef = B020 /* cli.py */; };
+/* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		7DE12D4A2DA1D1640000F6A2 /* MultiPing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultiPing.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		7DE12D582DA1D1650000F6A2 /* MultiPingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MultiPingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		7DE12D622DA1D1650000F6A2 /* MultiPingUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MultiPingUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B001 /* MultiPingApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiPingApp.swift; sourceTree = "<group>"; };
+		B002 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		B003 /* DeviceViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceViews.swift; sourceTree = "<group>"; };
+		B004 /* PingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PingManager.swift; sourceTree = "<group>"; };
+		B005 /* MenuBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarController.swift; sourceTree = "<group>"; };
+		B006 /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
+		B007 /* FloatingWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingWindowController.swift; sourceTree = "<group>"; };
+		B008 /* FindDevicesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindDevicesWindowController.swift; sourceTree = "<group>"; };
+		B009 /* NetworkScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkScanner.swift; sourceTree = "<group>"; };
+		B010 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
+		B011 /* DeviceEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceEditView.swift; sourceTree = "<group>"; };
+		B012 /* FloatingDeviceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingDeviceListView.swift; sourceTree = "<group>"; };
+		B013 /* FileImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileImporter.swift; sourceTree = "<group>"; };
+		B014 /* DeviceListDocument.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListDocument.swift; sourceTree = "<group>"; };
+		B015 /* ModeSelectorWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeSelectorWindowController.swift; sourceTree = "<group>"; };
+		B016 /* CLIRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLIRunner.swift; sourceTree = "<group>"; };
+		B017 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B018 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		B019 /* MultiPing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MultiPing.entitlements; sourceTree = "<group>"; };
+		B020 /* cli.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cli.py; sourceTree = "<group>"; };
+		B021 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		7DE12D4C2DA1D1640000F6A2 /* MultiPing */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MultiPing;
-			sourceTree = "<group>";
-		};
-		7DE12D5B2DA1D1650000F6A2 /* MultiPingTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MultiPingTests;
-			sourceTree = "<group>";
-		};
-		7DE12D652DA1D1650000F6A2 /* MultiPingUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MultiPingUITests;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		7DE12D472DA1D1640000F6A2 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7DE12D552DA1D1650000F6A2 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7DE12D5F2DA1D1650000F6A2 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -76,8 +69,6 @@
 			isa = PBXGroup;
 			children = (
 				7DE12D4C2DA1D1640000F6A2 /* MultiPing */,
-				7DE12D5B2DA1D1650000F6A2 /* MultiPingTests */,
-				7DE12D652DA1D1650000F6A2 /* MultiPingUITests */,
 				7DE12D4B2DA1D1640000F6A2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -86,10 +77,36 @@
 			isa = PBXGroup;
 			children = (
 				7DE12D4A2DA1D1640000F6A2 /* MultiPing.app */,
-				7DE12D582DA1D1650000F6A2 /* MultiPingTests.xctest */,
-				7DE12D622DA1D1650000F6A2 /* MultiPingUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7DE12D4C2DA1D1640000F6A2 /* MultiPing */ = {
+			isa = PBXGroup;
+			children = (
+				B001 /* MultiPingApp.swift */,
+				B002 /* Device.swift */,
+				B003 /* DeviceViews.swift */,
+				B011 /* DeviceEditView.swift */,
+				B014 /* DeviceListDocument.swift */,
+				B004 /* PingManager.swift */,
+				B005 /* MenuBarController.swift */,
+				B006 /* WindowManager.swift */,
+				B007 /* FloatingWindowController.swift */,
+				B008 /* FindDevicesWindowController.swift */,
+				B012 /* FloatingDeviceListView.swift */,
+				B009 /* NetworkScanner.swift */,
+				B010 /* Protocols.swift */,
+				B013 /* FileImporter.swift */,
+				B015 /* ModeSelectorWindowController.swift */,
+				B016 /* CLIRunner.swift */,
+				B017 /* ContentView.swift */,
+				B018 /* Media.xcassets */,
+				B019 /* MultiPing.entitlements */,
+				B020 /* cli.py */,
+				B021 /* Info.plist */,
+			);
+			path = MultiPing;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -107,61 +124,10 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				7DE12D4C2DA1D1640000F6A2 /* MultiPing */,
-			);
 			name = MultiPing;
-			packageProductDependencies = (
-			);
 			productName = MultiPing;
 			productReference = 7DE12D4A2DA1D1640000F6A2 /* MultiPing.app */;
 			productType = "com.apple.product-type.application";
-		};
-		7DE12D572DA1D1650000F6A2 /* MultiPingTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 7DE12D6F2DA1D1650000F6A2 /* Build configuration list for PBXNativeTarget "MultiPingTests" */;
-			buildPhases = (
-				7DE12D542DA1D1650000F6A2 /* Sources */,
-				7DE12D552DA1D1650000F6A2 /* Frameworks */,
-				7DE12D562DA1D1650000F6A2 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				7DE12D5A2DA1D1650000F6A2 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				7DE12D5B2DA1D1650000F6A2 /* MultiPingTests */,
-			);
-			name = MultiPingTests;
-			packageProductDependencies = (
-			);
-			productName = MultiPingTests;
-			productReference = 7DE12D582DA1D1650000F6A2 /* MultiPingTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		7DE12D612DA1D1650000F6A2 /* MultiPingUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 7DE12D722DA1D1650000F6A2 /* Build configuration list for PBXNativeTarget "MultiPingUITests" */;
-			buildPhases = (
-				7DE12D5E2DA1D1650000F6A2 /* Sources */,
-				7DE12D5F2DA1D1650000F6A2 /* Frameworks */,
-				7DE12D602DA1D1650000F6A2 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				7DE12D642DA1D1650000F6A2 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				7DE12D652DA1D1650000F6A2 /* MultiPingUITests */,
-			);
-			name = MultiPingUITests;
-			packageProductDependencies = (
-			);
-			productName = MultiPingUITests;
-			productReference = 7DE12D622DA1D1650000F6A2 /* MultiPingUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -170,23 +136,16 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1630;
-				LastUpgradeCheck = 1630;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					7DE12D492DA1D1640000F6A2 = {
-						CreatedOnToolsVersion = 16.3;
-					};
-					7DE12D572DA1D1650000F6A2 = {
-						CreatedOnToolsVersion = 16.3;
-						TestTargetID = 7DE12D492DA1D1640000F6A2;
-					};
-					7DE12D612DA1D1650000F6A2 = {
-						CreatedOnToolsVersion = 16.3;
-						TestTargetID = 7DE12D492DA1D1640000F6A2;
+						CreatedOnToolsVersion = 15.4;
 					};
 				};
 			};
 			buildConfigurationList = 7DE12D452DA1D1640000F6A2 /* Build configuration list for PBXProject "MultiPing" */;
+			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -194,15 +153,11 @@
 				Base,
 			);
 			mainGroup = 7DE12D412DA1D1640000F6A2;
-			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
 			productRefGroup = 7DE12D4B2DA1D1640000F6A2 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				7DE12D492DA1D1640000F6A2 /* MultiPing */,
-				7DE12D572DA1D1650000F6A2 /* MultiPingTests */,
-				7DE12D612DA1D1650000F6A2 /* MultiPingUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -212,20 +167,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7DE12D562DA1D1650000F6A2 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7DE12D602DA1D1650000F6A2 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				A018 /* Media.xcassets in Resources */,
+				A019 /* MultiPing.entitlements in Resources */,
+				A020 /* cli.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,37 +180,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7DE12D542DA1D1650000F6A2 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		7DE12D5E2DA1D1650000F6A2 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				A001 /* MultiPingApp.swift in Sources */,
+				A002 /* Device.swift in Sources */,
+				A003 /* DeviceViews.swift in Sources */,
+				A004 /* PingManager.swift in Sources */,
+				A005 /* MenuBarController.swift in Sources */,
+				A006 /* WindowManager.swift in Sources */,
+				A007 /* FloatingWindowController.swift in Sources */,
+				A008 /* FindDevicesWindowController.swift in Sources */,
+				A009 /* NetworkScanner.swift in Sources */,
+				A010 /* Protocols.swift in Sources */,
+				A011 /* DeviceEditView.swift in Sources */,
+				A012 /* FloatingDeviceListView.swift in Sources */,
+				A013 /* FileImporter.swift in Sources */,
+				A014 /* DeviceListDocument.swift in Sources */,
+				A015 /* ModeSelectorWindowController.swift in Sources */,
+				A016 /* CLIRunner.swift in Sources */,
+				A017 /* ContentView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		7DE12D5A2DA1D1650000F6A2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7DE12D492DA1D1640000F6A2 /* MultiPing */;
-			targetProxy = 7DE12D592DA1D1650000F6A2 /* PBXContainerItemProxy */;
-		};
-		7DE12D642DA1D1650000F6A2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 7DE12D492DA1D1640000F6A2 /* MultiPing */;
-			targetProxy = 7DE12D632DA1D1650000F6A2 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		7DE12D6A2DA1D1650000F6A2 /* Debug */ = {
@@ -392,23 +326,25 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_ENTITLEMENTS = MultiPing/MultiPing.entitlements;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MultiPing/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MultiPing;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "-.MultiPing";
+				MARKETING_VERSION = 1.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.multiping.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.9;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
 		};
@@ -417,87 +353,25 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_ENTITLEMENTS = MultiPing/MultiPing.entitlements;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MultiPing/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MultiPing;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "-.MultiPing";
+				MARKETING_VERSION = 1.6;
+				PRODUCT_BUNDLE_IDENTIFIER = com.multiping.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.9;
-			};
-			name = Release;
-		};
-		7DE12D702DA1D1650000F6A2 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "-.MultiPingTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.9;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MultiPing.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MultiPing";
-			};
-			name = Debug;
-		};
-		7DE12D712DA1D1650000F6A2 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "-.MultiPingTests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.9;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MultiPing.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MultiPing";
-			};
-			name = Release;
-		};
-		7DE12D732DA1D1650000F6A2 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "-.MultiPingUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.9;
-				TEST_TARGET_NAME = MultiPing;
-			};
-			name = Debug;
-		};
-		7DE12D742DA1D1650000F6A2 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "-.MultiPingUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.9;
-				TEST_TARGET_NAME = MultiPing;
+				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
 		};
@@ -518,24 +392,6 @@
 			buildConfigurations = (
 				7DE12D6D2DA1D1650000F6A2 /* Debug */,
 				7DE12D6E2DA1D1650000F6A2 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		7DE12D6F2DA1D1650000F6A2 /* Build configuration list for PBXNativeTarget "MultiPingTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				7DE12D702DA1D1650000F6A2 /* Debug */,
-				7DE12D712DA1D1650000F6A2 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		7DE12D722DA1D1650000F6A2 /* Build configuration list for PBXNativeTarget "MultiPingUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				7DE12D732DA1D1650000F6A2 /* Debug */,
-				7DE12D742DA1D1650000F6A2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
