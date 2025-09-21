@@ -1,0 +1,100 @@
+{
+  "" : {
+    "const-values" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPing-master.swiftconstvalues",
+    "dependencies" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPing-master.d",
+    "diagnostics" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPing-master.dia",
+    "emit-module-dependencies" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPing-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPing-master-emit-module.dia",
+    "swift-dependencies" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPing-master.swiftdeps"
+  },
+  "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/GeneratedAssetSymbols.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/CLIRunner.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/CLIRunner.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/CLIRunner.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/CLIRunner.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/ContentView.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/ContentView.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/Device.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/Device.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/Device.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/Device.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/DeviceEditView.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/DeviceEditView.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/DeviceEditView.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/DeviceEditView.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/DeviceListDocument.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/DeviceListDocument.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/DeviceListDocument.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/DeviceListDocument.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/DeviceViews.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/DeviceViews.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/DeviceViews.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/DeviceViews.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/FileImporter.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/FileImporter.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/FileImporter.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/FileImporter.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/FindDevicesWindowController.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/FindDevicesWindowController.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/FindDevicesWindowController.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/FindDevicesWindowController.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/FloatingDeviceListView.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/FloatingDeviceListView.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/FloatingDeviceListView.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/FloatingDeviceListView.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/FloatingWindowController.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/FloatingWindowController.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/FloatingWindowController.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/FloatingWindowController.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/MenuBarController.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MenuBarController.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MenuBarController.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MenuBarController.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/ModeSelectorWindowController.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/ModeSelectorWindowController.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/ModeSelectorWindowController.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/ModeSelectorWindowController.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/MultiPingApp.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPingApp.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPingApp.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/MultiPingApp.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/NetworkScanner.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/NetworkScanner.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/NetworkScanner.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/NetworkScanner.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/PingManager.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/PingManager.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/PingManager.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/PingManager.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/Protocols.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/Protocols.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/Protocols.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/Protocols.o"
+  },
+  "/Users/jamiemetzger/MultiPing/MultiPing/WindowManager.swift" : {
+    "index-unit-output-path" : "/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/WindowManager.o",
+    "llvm-bc" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/WindowManager.bc",
+    "object" : "/Users/jamiemetzger/MultiPing/build/MultiPing.build/Release/MultiPing.build/Objects-normal/arm64/WindowManager.o"
+  }
+}

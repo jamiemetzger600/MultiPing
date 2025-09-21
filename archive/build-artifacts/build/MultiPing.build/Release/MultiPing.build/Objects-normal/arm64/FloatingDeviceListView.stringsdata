@@ -1,0 +1,32 @@
+{
+  "source": "/Users/jamiemetzger/MultiPing/MultiPing/FloatingDeviceListView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Multi-Ping"
+      },
+      {
+        "comment": "",
+        "key": "Toggle Always on Top"
+      },
+      {
+        "comment": "",
+        "key": "Notes"
+      },
+      {
+        "comment": "",
+        "key": "Adjust Window Opacity"
+      },
+      {
+        "comment": "",
+        "key": "Switch to Menu Bar Mode"
+      },
+      {
+        "comment": "",
+        "key": "Window Opacity: %lld%%"
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,132 @@
+{
+  "source": "/Users/jamiemetzger/MultiPing/MultiPing/DeviceViews.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Error"
+      },
+      {
+        "comment": "",
+        "key": "OK"
+      },
+      {
+        "comment": "",
+        "key": "Devices"
+      },
+      {
+        "comment": "",
+        "key": "Edit"
+      },
+      {
+        "comment": "",
+        "key": "Delete"
+      },
+      {
+        "comment": "",
+        "key": "Ping Interval:"
+      },
+      {
+        "comment": "",
+        "key": "s"
+      },
+      {
+        "comment": "",
+        "key": "Secs"
+      },
+      {
+        "comment": "",
+        "key": "Display Mode:"
+      },
+      {
+        "comment": "",
+        "key": "Mode"
+      },
+      {
+        "comment": "",
+        "key": "Menu Bar"
+      },
+      {
+        "comment": "",
+        "key": "Floating Window"
+      },
+      {
+        "comment": "",
+        "key": "Import/Export"
+      },
+      {
+        "comment": "",
+        "key": "Import Devices"
+      },
+      {
+        "comment": "",
+        "key": "Export (CSV)"
+      },
+      {
+        "comment": "",
+        "key": "Export (TXT)"
+      },
+      {
+        "comment": "",
+        "key": "↑"
+      },
+      {
+        "comment": "",
+        "key": "↓"
+      },
+      {
+        "comment": "",
+        "key": "Add Device(s)"
+      },
+      {
+        "comment": "",
+        "key": "Enter IP address, hostname, or Name,IP per line."
+      },
+      {
+        "comment": "",
+        "key": "Cancel"
+      },
+      {
+        "comment": "",
+        "key": "Add"
+      },
+      {
+        "comment": "",
+        "key": "Duplicate IP Address"
+      },
+      {
+        "comment": "",
+        "key": "Invalid IP Address"
+      },
+      {
+        "comment": "",
+        "key": "Add Device"
+      },
+      {
+        "comment": "",
+        "key": "Name"
+      },
+      {
+        "comment": "",
+        "key": "IP Address"
+      },
+      {
+        "comment": "",
+        "key": "Note (Optional)"
+      },
+      {
+        "comment": "",
+        "key": "Find Devices"
+      },
+      {
+        "comment": "",
+        "key": "A device with IP address '%@' already exists."
+      },
+      {
+        "comment": "",
+        "key": "The IP address '%@' appears to be invalid. Please enter a valid IPv4 address or hostname."
+      }
+    ]
+  },
+  "version": 1
+}

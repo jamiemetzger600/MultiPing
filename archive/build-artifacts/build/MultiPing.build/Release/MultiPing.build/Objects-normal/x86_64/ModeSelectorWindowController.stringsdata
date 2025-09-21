@@ -1,0 +1,28 @@
+{
+  "source": "/Users/jamiemetzger/MultiPing/MultiPing/ModeSelectorWindowController.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Choose how Multi-Ping should run:"
+      },
+      {
+        "comment": "",
+        "key": "Interface Mode"
+      },
+      {
+        "comment": "",
+        "key": "Menu Bar"
+      },
+      {
+        "comment": "",
+        "key": "Floating Window"
+      },
+      {
+        "comment": "",
+        "key": "Command Line"
+      }
+    ]
+  },
+  "version": 1
+}
