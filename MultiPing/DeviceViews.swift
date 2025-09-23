@@ -178,7 +178,7 @@ struct DeviceListView: View {
     private var bottomControls: AnyView {
         AnyView(
             VStack(alignment: .leading, spacing: 8) {
-                AddDeviceView(newDevice: $newDevice, addAction: addDevice)
+                AddDeviceView(newDevice: $newDevice, addAction: addDevice, appDelegate: appDelegate)
                     .padding(.bottom, 5)
                 
                 Divider()
@@ -412,12 +412,12 @@ struct DeviceListView: View {
                 intervalString = String(format: "%.2f", roundedValue).replacingOccurrences(of: #"\.?0+$"#, with: "", options: .regularExpression)
             }
         } else {
-            print("DeviceListView: Invalid interval input '\(intervalString)'. Reverting to default (5s).")
+            print("DeviceListView: Invalid interval input '\(intervalString)'. Reverting to default (3s).")
             
-            // Reset to default 5 seconds
-            currentInterval = 5.0
-            pingManager.updatePingInterval(5.0)
-            intervalString = "5"
+            // Reset to default 3 seconds
+            currentInterval = 3.0
+            pingManager.updatePingInterval(3.0)
+            intervalString = "3"
         }
         
         // Ensure the ping timer is running with the updated interval
@@ -584,6 +584,7 @@ struct AddDeviceInputView: View {
 struct AddDeviceView: View {
     @Binding var newDevice: Device
     let addAction: () -> Void
+    let appDelegate: AppDelegate
     @ObservedObject private var pingManager = PingManager.shared
     @State private var showingDuplicateAlert = false
     @State private var showingInvalidIPAlert = false
@@ -642,7 +643,10 @@ struct AddDeviceView: View {
                 
                 // Add Find Devices button
                 Button(action: {
-                    openWindow(id: "findDevices")
+                    print("DeviceViews: Find Devices button clicked")
+                    print("DeviceViews: Using environment AppDelegate, calling FindDevicesWindowController")
+                    let findDevicesController = FindDevicesWindowController()
+                    findDevicesController.showWindow(nil)
                 }) {
                     Text("Find Devices")
                         .frame(maxWidth: .infinity)

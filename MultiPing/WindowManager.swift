@@ -69,6 +69,56 @@ class MainWindowManager: NSObject, NSWindowDelegate {
         print("WindowManager: Main window configured.")
     }
     
+    func ensureMainWindow(appDelegate: AppDelegate) {
+        // If we already have a configured window, just show it
+        if let window = mainWindow, window.isVisible {
+            window.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+
+        // Try to find existing window first
+        if mainWindow == nil, let existing = findMainWindow() {
+            configureMainWindow(existing)
+            existing.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+            return
+        }
+
+        // Create a new window hosting the DeviceListView as a last resort
+        let contentView = DeviceListView()
+            .environmentObject(appDelegate)
+        
+        // Try to restore saved frame first, otherwise use default size
+        let frame: NSRect
+        if let savedFrame = frameFromUserDefaults() {
+            frame = savedFrame
+            print("WindowManager: Using saved frame for new main window: \(frame)")
+        } else {
+            let screenSize = NSScreen.main?.visibleFrame ?? NSRect(x: 0, y: 0, width: 800, height: 600)
+            let defaultSize = NSSize(width: 500, height: 600)
+            let defaultOrigin = NSPoint(
+                x: screenSize.midX - defaultSize.width/2,
+                y: screenSize.midY - defaultSize.height/2
+            )
+            frame = NSRect(origin: defaultOrigin, size: defaultSize)
+            print("WindowManager: Using default frame for new main window: \(frame)")
+        }
+        
+        let window = NSWindow(
+            contentRect: frame,
+            styleMask: [.titled, .closable, .miniaturizable, .resizable],
+            backing: .buffered,
+            defer: false
+        )
+        window.title = "MultiPing - Devices"
+        window.isReleasedWhenClosed = false
+        window.contentView = NSHostingView(rootView: contentView)
+        configureMainWindow(window)
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
     func showMainWindow() {
         print("WindowManager: Attempting to show main window.")
         

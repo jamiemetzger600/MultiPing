@@ -1,0 +1,188 @@
+{
+  "" : {
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MultiPing-master.dia",
+    "emit-module-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MultiPing-master-emit-module.d",
+    "emit-module-diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MultiPing-master-emit-module.dia",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MultiPing-master.swiftdeps"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/CLIRunner.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/CLIRunner.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/CLIRunner.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/CLIRunner.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/CLIRunner.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/CLIRunner.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/CLIRunner.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/CLIRunner.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/CLIRunner~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/ContentView.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ContentView.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ContentView.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ContentView.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ContentView.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ContentView.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ContentView.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ContentView.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ContentView~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/Device.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Device.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Device.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Device.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Device.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Device.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Device.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Device.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Device~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/DeviceEditView.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceEditView.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceEditView.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceEditView.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceEditView.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceEditView.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceEditView.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceEditView.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceEditView~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/DeviceListDocument.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceListDocument.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceListDocument.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceListDocument.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceListDocument.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceListDocument.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceListDocument.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceListDocument.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceListDocument~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/DeviceViews.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceViews.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceViews.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceViews.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceViews.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceViews.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceViews.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceViews.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/DeviceViews~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/FileImporter.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FileImporter.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FileImporter.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FileImporter.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FileImporter.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FileImporter.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FileImporter.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FileImporter.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FileImporter~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/FindDevicesWindowController.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FindDevicesWindowController.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FindDevicesWindowController.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FindDevicesWindowController.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FindDevicesWindowController.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FindDevicesWindowController.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FindDevicesWindowController.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FindDevicesWindowController.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FindDevicesWindowController~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/FloatingDeviceListView.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingDeviceListView.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingDeviceListView.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingDeviceListView.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingDeviceListView.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingDeviceListView.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingDeviceListView.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingDeviceListView.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingDeviceListView~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/FloatingWindowController.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingWindowController.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingWindowController.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingWindowController.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingWindowController.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingWindowController.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingWindowController.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingWindowController.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/FloatingWindowController~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/MenuBarController.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MenuBarController.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MenuBarController.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MenuBarController.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MenuBarController.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MenuBarController.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MenuBarController.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MenuBarController.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MenuBarController~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/ModeSelectorWindowController.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ModeSelectorWindowController.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ModeSelectorWindowController.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ModeSelectorWindowController.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ModeSelectorWindowController.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ModeSelectorWindowController.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ModeSelectorWindowController.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ModeSelectorWindowController.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/ModeSelectorWindowController~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/MultiPingApp.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MultiPingApp.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MultiPingApp.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MultiPingApp.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MultiPingApp.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MultiPingApp.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MultiPingApp.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MultiPingApp.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/MultiPingApp~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/NetworkScanner.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/NetworkScanner.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/NetworkScanner.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/NetworkScanner.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/NetworkScanner.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/NetworkScanner.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/NetworkScanner.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/NetworkScanner.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/NetworkScanner~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/PingManager.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/PingManager.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/PingManager.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/PingManager.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/PingManager.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/PingManager.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/PingManager.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/PingManager.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/PingManager~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/Protocols.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Protocols.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Protocols.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Protocols.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Protocols.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Protocols.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Protocols.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Protocols.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/Protocols~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/WindowManager.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/WindowManager.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/WindowManager.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/WindowManager.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/WindowManager.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/WindowManager.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/WindowManager.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/WindowManager.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/WindowManager~partial.swiftmodule"
+  },
+  "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/build/MultiPing.build/Debug/MultiPing.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

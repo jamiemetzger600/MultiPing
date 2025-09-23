@@ -90,7 +90,7 @@ struct SimplifiedDeviceView: View {
             VStack(alignment: .leading, spacing: 4) {
                 // Header with controls
                 HStack(spacing: 8) {
-                    Toggle("Notes", isOn: $showNotes)
+                    Toggle("Show Notes", isOn: $showNotes)
                         .toggleStyle(.checkbox)
                         .controlSize(.small)
                     Spacer()
@@ -111,9 +111,7 @@ struct SimplifiedDeviceView: View {
                         
                         // Use the new method to set always on top
                         if let appDelegate = NSApp.delegate as? AppDelegate {
-                            if let floatingController = appDelegate.floatingWindowController as? FloatingWindowController {
-                                floatingController.setAlwaysOnTop(alwaysOnTop)
-                            }
+                            appDelegate.floatingWindowController.setAlwaysOnTop(alwaysOnTop)
                         }
                     }) {
                         Image(systemName: alwaysOnTop ? "pin.fill" : "pin.slash")
@@ -122,21 +120,21 @@ struct SimplifiedDeviceView: View {
                     }
                     .buttonStyle(.borderless)
                     
-                    // Menu Mode Button
+                    // Main Devices Window Button
                     Button(action: {
-                        print("SimplifiedDeviceView: Gear icon clicked - switching to menuBar mode")
+                        print("SimplifiedDeviceView: Gear icon clicked - opening Main Devices window")
                         
-                        // First hide this window to prevent visual glitches
-                        if let window = windowRef {
-                            print("SimplifiedDeviceView: Hiding floating window before mode switch")
-                            window.orderOut(nil)
-                        }
-                        
-                        // Use centralized mode switching instead of duplicating logic
+                        // Switch to menuBar mode and show the main devices window
                         appDelegate.switchMode(to: "menuBar")
+                        
+                        // Ensure the main window is shown
+                        appDelegate.mainWindowManager.ensureMainWindow(appDelegate: appDelegate)
+                        
+                        // Activate the app to bring the main window to front
+                        NSApp.activate(ignoringOtherApps: true)
                     }) {
                         Image(systemName: "gear")
-                            .help("Switch to Menu Bar Mode")
+                            .help("Open Main Devices Window")
                     }
                     .buttonStyle(.borderless)
                 }

@@ -1,0 +1,48 @@
+{
+  "source": "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/ModeSelectorWindowController.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Choose how Multi-Ping should run:",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 63
+        }
+      },
+      {
+        "comment": "",
+        "key": "Interface Mode",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 66
+        }
+      },
+      {
+        "comment": "",
+        "key": "Menu Bar",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 67
+        }
+      },
+      {
+        "comment": "",
+        "key": "Floating Window",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 68
+        }
+      },
+      {
+        "comment": "",
+        "key": "Command Line",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 69
+        }
+      }
+    ]
+  },
+  "version": 1
+}

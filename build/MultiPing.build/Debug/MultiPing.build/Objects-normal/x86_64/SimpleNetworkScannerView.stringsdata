@@ -1,0 +1,144 @@
+{
+  "source": "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/SimpleNetworkScannerView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Network Device Scanner",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 11
+        }
+      },
+      {
+        "comment": "",
+        "key": "Stop Scan",
+        "location": {
+          "startingColumn": 45,
+          "startingLine": 17
+        }
+      },
+      {
+        "comment": "",
+        "key": "Start Scan",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 17
+        }
+      },
+      {
+        "comment": "",
+        "key": "Scanning: %@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 53
+        }
+      },
+      {
+        "comment": "",
+        "key": "Network Interface:",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 31
+        }
+      },
+      {
+        "comment": "",
+        "key": "Interface",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 35
+        }
+      },
+      {
+        "comment": "",
+        "key": "Refresh",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 44
+        }
+      },
+      {
+        "comment": "",
+        "key": "Scanning...",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 63
+        }
+      },
+      {
+        "comment": "",
+        "key": "Current: %@",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 70
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld%%",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 75
+        }
+      },
+      {
+        "comment": "",
+        "key": "No devices found. Click 'Start Scan' to discover devices on your network.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 102
+        }
+      },
+      {
+        "comment": "",
+        "key": "Discovered Devices (%lld)",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 88
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add Selected to Monitor",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 94
+        }
+      },
+      {
+        "comment": "",
+        "key": "IP Address",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 110
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hostname",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 116
+        }
+      },
+      {
+        "comment": "",
+        "key": "MAC Address",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 121
+        }
+      },
+      {
+        "comment": "",
+        "key": "Vendor",
+        "location": {
+          "startingColumn": 37,
+          "startingLine": 127
+        }
+      }
+    ]
+  },
+  "version": 1
+}

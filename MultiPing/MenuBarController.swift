@@ -201,36 +201,8 @@ class MenuBarController: NSObject {
                     currentMenu.removeItem(at: 2)
                 }
                 
-                let capsuleRowView = NSHostingView(rootView:
-                    HStack(spacing: 8) {
-                        ForEach(devices) { device in
-                            Text(device.name)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 6)
-                                .background(device.isReachable ? Color.green : Color.red)
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                                .font(.system(size: 12, weight: .semibold))
-                        }
-                    }
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 4)
-                    .frame(minHeight: 32) // Ensure minimum height for menu items
-                    .opacity(1.0) // Menu items should remain visible
-                )
-                
-                // Set explicit frame for the hosting view
-                capsuleRowView.frame = NSRect(x: 0, y: 0, width: 300, height: 32)
-                
-                let customItem = NSMenuItem()
-                customItem.view = capsuleRowView
-                // Insert after separator at index 2
-                 if currentMenu.items.count >= 2 {
-                     currentMenu.insertItem(customItem, at: 2)
-                 } else {
-                     // Fallback if menu structure is unexpected
-                     currentMenu.addItem(customItem)
-                 }
+                // Note: Device status icons removed from dropdown menu per user request
+                // The status capsules still appear in the menu bar itself, but not in the dropdown
             } else {
                 // If menu somehow became nil, recreate it
                 self.setupMenu()
@@ -348,7 +320,7 @@ class MenuBarController: NSObject {
         appDelegate.switchMode(to: "menuBar")
         
         print("MenuBarController: Mode switched, now showing main window")
-        appDelegate.mainWindowManager.showMainWindow()
+        appDelegate.mainWindowManager.ensureMainWindow(appDelegate: appDelegate)
         
         print("MenuBarController: Activating application")
         NSApp.activate(ignoringOtherApps: true)
@@ -360,7 +332,7 @@ class MenuBarController: NSObject {
         print("MenuBarController: showFindDevicesWindow action triggered")
         
         // Get the app delegate from our stored reference
-        guard let appDelegate = self.appDelegate else {
+        guard self.appDelegate != nil else {
             print("MenuBarController: ERROR - No AppDelegate reference stored")
             return
         }
@@ -369,8 +341,9 @@ class MenuBarController: NSObject {
         
         // Don't switch modes - just open the Find Devices window directly
         // Use the window controller specifically created for this
-        print("MenuBarController: Calling FindDevicesWindowController.shared.show(appDelegate:)")
-        FindDevicesWindowController.shared.show(appDelegate: appDelegate)
+        print("MenuBarController: Creating and showing FindDevicesWindowController")
+        let findDevicesController = FindDevicesWindowController()
+        findDevicesController.showWindow(nil)
         
         // Ensure the app is activated
         print("MenuBarController: Activating application")

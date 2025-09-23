@@ -223,7 +223,7 @@ class FloatingWindowController {
             panel.isFloatingPanel = true
             panel.becomesKeyOnlyIfNeeded = true
             panel.hidesOnDeactivate = false
-            panel.level = alwaysOnTop ? .floating : .normal
+            panel.level = alwaysOnTop ? .statusBar : .normal
             
             // Set alpha value during creation
             let opacity = UserDefaults.standard.double(forKey: "floatingWindowOpacity")
@@ -292,8 +292,14 @@ class FloatingWindowController {
     func setAlwaysOnTop(_ alwaysOnTop: Bool) {
         print("FloatingWindowController: Setting alwaysOnTop to \(alwaysOnTop)")
         if let window = window {
-            window.level = alwaysOnTop ? .floating : .normal
-            print("Window level set to: \(window.level.rawValue)")
+            if alwaysOnTop {
+                // Use .statusBar level to ensure it stays above all other windows
+                window.level = .statusBar
+                print("Window level set to: .statusBar (\(window.level.rawValue))")
+            } else {
+                window.level = .normal
+                print("Window level set to: .normal (\(window.level.rawValue))")
+            }
         }
     }
 }

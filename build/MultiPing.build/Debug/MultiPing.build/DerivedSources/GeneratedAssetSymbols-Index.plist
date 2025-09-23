@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>colors</key>
+	<array/>
+	<key>images</key>
+	<array>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/Media.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameIcon128X128</string>
+			<key>relativePath</key>
+			<string>./icon_128x128.imageset</string>
+			<key>swiftSymbol</key>
+			<string>icon128X128</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/Media.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameIcon16X16</string>
+			<key>relativePath</key>
+			<string>./icon_16x16.imageset</string>
+			<key>swiftSymbol</key>
+			<string>icon16X16</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/Media.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameIcon256X256</string>
+			<key>relativePath</key>
+			<string>./icon_256x256.imageset</string>
+			<key>swiftSymbol</key>
+			<string>icon256X256</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/Media.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameIcon32X32</string>
+			<key>relativePath</key>
+			<string>./icon_32x32.imageset</string>
+			<key>swiftSymbol</key>
+			<string>icon32X32</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/Media.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameIcon512X512</string>
+			<key>relativePath</key>
+			<string>./icon_512x512.imageset</string>
+			<key>swiftSymbol</key>
+			<string>icon512X512</string>
+		</dict>
+	</array>
+	<key>symbols</key>
+	<array/>
+</dict>
+</plist>

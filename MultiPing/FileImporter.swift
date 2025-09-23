@@ -1,5 +1,6 @@
 import Foundation
 import AppKit
+import UniformTypeIdentifiers
 
 class FileImporter {
     static let shared = FileImporter()
@@ -53,7 +54,7 @@ class FileImporter {
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
         panel.canChooseFiles = true
-        panel.allowedFileTypes = ["txt", "rtf", "csv"]
+        panel.allowedContentTypes = [.plainText, .rtf, .commaSeparatedText]
         
         panel.begin { response in
             if response == .OK, let url = panel.url {

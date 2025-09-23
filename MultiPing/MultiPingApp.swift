@@ -14,40 +14,18 @@ struct MultiPingApp: App {
             // Ensure DeviceListView is the content
             DeviceListView()
                 .environmentObject(appDelegate) // Pass the delegate
+                .onAppear {
+                    // Configure the main window when the first content appears
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        // Ask the window manager to guarantee a main window exists
+                        appDelegate.mainWindowManager.ensureMainWindow(appDelegate: appDelegate)
+                    }
+                }
         }
         .windowStyle(.hiddenTitleBar) // Keep style
         
-        // Add Find Devices Window
-        WindowGroup(id: "findDevices") {
-            FindDevicesView()
-                .environmentObject(appDelegate)
-                .environmentObject(PingManager.shared)
-                .onAppear {
-                    // Apply window controller to configure the window
-                    // Use a more robust approach to find the window
-                    var attempts = 0
-                    func configureWindow() {
-                        if let window = NSApp.windows.first(where: { 
-                            $0.title == "Find Devices" || 
-                            $0.title.contains("findDevices") ||
-                            $0.identifier?.rawValue == "findDevices"
-                        }) {
-                            FindDevicesWindowController.shared.configureFindDevicesWindow(window)
-                        } else if attempts < 1 {
-                            attempts += 1
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
-                                configureWindow()
-                            }
-                        }
-                    }
-                    configureWindow()
-                }
-        }
-        .windowStyle(.titleBar)
-        .windowResizability(.contentMinSize)
-        .defaultPosition(.center)
-        .defaultSize(CGSize(width: 650, height: 500))
-        .commandsRemoved()
+        // NOTE: Find Devices Window is now handled manually via NSWindow
+        // to prevent auto-opening and crashes
     }
 }
 
@@ -62,7 +40,7 @@ struct MultiPingApp: App {
     var pingManager = PingManager.shared
     var mainWindowManager = MainWindowManager.shared // Make public
     var floatingWindowController = FloatingWindowController.shared
-    private var findDevicesWindowController = FindDevicesWindowController.shared
+    private var findDevicesWindowController: FindDevicesWindowController?
 
     // MARK: - Internal State
     var cancellable: AnyCancellable?
@@ -112,8 +90,8 @@ struct MultiPingApp: App {
         // Ensure floating window is hidden at launch
         floatingWindowController.hide()
         
-        // Show the main window immediately
-        mainWindowManager.showMainWindow()
+        // Ensure the main window exists and is visible
+        mainWindowManager.ensureMainWindow(appDelegate: self)
         
         // Apply menuBar state at launch
         applyModeState(mode: "menuBar")
@@ -161,7 +139,7 @@ struct MultiPingApp: App {
             // Even if already in this mode, try to show the window
             if newMode == "menuBar" {
                 print("AppDelegate: Already in menuBar mode, still showing main window.")
-                mainWindowManager.showMainWindow()
+                mainWindowManager.ensureMainWindow(appDelegate: self)
             } else if newMode == "floatingWindow" {
                 print("AppDelegate: Already in floatingWindow mode, still showing floating window.")
                 floatingWindowController.show(appDelegate: self)
@@ -204,7 +182,7 @@ struct MultiPingApp: App {
                 self.menuBarController.show()
                 
                 // Show main window
-                self.mainWindowManager.showMainWindow()
+                self.mainWindowManager.ensureMainWindow(appDelegate: self)
                 NSApp.activate(ignoringOtherApps: true)
                 
             case "floatingWindow":
@@ -229,7 +207,7 @@ struct MultiPingApp: App {
                 self.floatingWindowController.hide()
                 self.menuBarController.setup(with: self.pingManager, appDelegate: self)
                 self.menuBarController.show()
-                self.mainWindowManager.showMainWindow()
+                self.mainWindowManager.ensureMainWindow(appDelegate: self)
             }
             
             print("AppDelegate: Finished applying UI state for mode \(mode)")
@@ -270,8 +248,9 @@ struct MultiPingApp: App {
 
         var errorDict: NSDictionary? = nil
         if let scriptObject = NSAppleScript(source: appleScriptSource) {
-            if scriptObject.executeAndReturnError(&errorDict) != nil {
-                print("AppleScript executed (check Terminal).")
+            _ = scriptObject.executeAndReturnError(&errorDict)
+            if errorDict == nil {
+                print("AppleScript executed successfully (check Terminal).")
             } else {
                 print("AppleScript Execution Failed: \(errorDict ?? [:])")
                 DispatchQueue.main.async { self.switchMode(to: "menuBar") } // Fallback
@@ -287,7 +266,7 @@ struct MultiPingApp: App {
         print("AppDelegate: openSettings called")
         // Show main window directly - settings are in the main interface
         switchMode(to: "menuBar")
-        mainWindowManager.showMainWindow()
+        mainWindowManager.ensureMainWindow(appDelegate: self)
         NSApp.activate(ignoringOtherApps: true)
     }
 
@@ -334,7 +313,7 @@ struct MultiPingApp: App {
         // Always show the main window when app is reopened via Dock
         DispatchQueue.main.async {
             print("AppDelegate: Showing main window from applicationShouldHandleReopen")
-            self.mainWindowManager.showMainWindow()
+            self.mainWindowManager.ensureMainWindow(appDelegate: self)
             
             // If we're in floating window mode, also show the floating window
             if self.currentMode == "floatingWindow" {

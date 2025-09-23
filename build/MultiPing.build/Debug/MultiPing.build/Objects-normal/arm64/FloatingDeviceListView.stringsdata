@@ -1,0 +1,64 @@
+{
+  "source": "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/FloatingDeviceListView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Multi-Ping",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 20
+        }
+      },
+      {
+        "comment": "",
+        "key": "Toggle Always on Top",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 31
+        }
+      },
+      {
+        "comment": "",
+        "key": "Notes",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 93
+        }
+      },
+      {
+        "comment": "",
+        "key": "Adjust Window Opacity",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 103
+        }
+      },
+      {
+        "comment": "",
+        "key": "Toggle Always on Top",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 119
+        }
+      },
+      {
+        "comment": "",
+        "key": "Switch to Menu Bar Mode",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 137
+        }
+      },
+      {
+        "comment": "",
+        "key": "Window Opacity: %lld%%",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 146
+        }
+      }
+    ]
+  },
+  "version": 1
+}

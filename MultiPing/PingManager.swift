@@ -13,7 +13,7 @@ class PingManager: ObservableObject {
     }
 
     // Published property for the interval
-    @Published var pingInterval: Double = 5.0 // Default to 5 seconds
+    @Published var pingInterval: Double = 3.0 // Default to 3 seconds
 
     private let fileURL: URL = {
         guard let documents = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
@@ -29,13 +29,13 @@ class PingManager: ObservableObject {
     private var cancellables = Set<AnyCancellable>() // To observe interval changes
 
     private init() {
-        // Force reset ping interval to 5 seconds
-        pingInterval = 5.0
+        // Force reset ping interval to 3 seconds
+        pingInterval = 3.0
         UserDefaults.standard.set(pingInterval, forKey: "pingInterval")
-        print("PingManager: Force setting default ping interval to 5 seconds")
+        print("PingManager: Force setting default ping interval to 3 seconds")
         
         loadDevices()
-        loadPingInterval() // Load saved interval (which is now 5s)
+        loadPingInterval() // Load saved interval (which is now 3s)
         setupIntervalObserver() // Observe changes to interval property
         startPingTimer()   // Start the timer with the loaded interval
         print("PingManager initialized. Interval: \(pingInterval)")
@@ -86,7 +86,7 @@ class PingManager: ObservableObject {
             pingInterval = savedInterval
              print("PingManager: Loaded interval from UserDefaults: \(pingInterval)")
         } else {
-            pingInterval = 5.0
+            pingInterval = 3.0
             UserDefaults.standard.set(pingInterval, forKey: "pingInterval")
              print("PingManager: No valid interval in UserDefaults, using default: \(pingInterval)")
         }
@@ -185,13 +185,26 @@ class PingManager: ObservableObject {
     }
 
     func pingDeviceImmediately(_ device: Device) {
-         DispatchQueue.global(qos: .background).async {
-             var updated = device
-             updated.isReachable = self.ping(ip: device.ipAddress)
-             DispatchQueue.main.async {
-                 if let index = self.devices.firstIndex(where: { $0.id == updated.id }) {
-                     if self.devices[index].isReachable != updated.isReachable {
-                         self.devices[index].isReachable = updated.isReachable
+         DispatchQueue.global(qos: .background).async { [weak self] in
+             guard let self = self else { return }
+             let isReachable = self.ping(ip: device.ipAddress)
+             DispatchQueue.main.async { [weak self] in
+                 guard let self = self else { return }
+                 // Use a more robust approach to find and update the device
+                 // Make a copy of the devices array to avoid race conditions
+                 let currentDevices = self.devices
+                 
+                 // Ensure we don't access out of bounds
+                 guard !currentDevices.isEmpty else { return }
+                 
+                 for i in 0..<currentDevices.count {
+                     // Double-check bounds before accessing
+                     guard i < self.devices.count else { continue }
+                     if self.devices[i].id == device.id {
+                         if self.devices[i].isReachable != isReachable {
+                             self.devices[i].isReachable = isReachable
+                         }
+                         break
                      }
                  }
              }

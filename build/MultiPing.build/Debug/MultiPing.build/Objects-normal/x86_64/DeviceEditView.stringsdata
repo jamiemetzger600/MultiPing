@@ -1,0 +1,104 @@
+{
+  "source": "/Users/jamie/Documents/Multiping_1.7_BRANCH/MultiPing/MultiPing/DeviceEditView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Duplicate IP Address",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 95
+        }
+      },
+      {
+        "comment": "",
+        "key": "Invalid IP Address",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 100
+        }
+      },
+      {
+        "comment": "",
+        "key": "Edit Device",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 58
+        }
+      },
+      {
+        "comment": "",
+        "key": "Name",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 61
+        }
+      },
+      {
+        "comment": "",
+        "key": "IP Address",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 64
+        }
+      },
+      {
+        "comment": "",
+        "key": "Note (Optional)",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 67
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 76
+        }
+      },
+      {
+        "comment": "",
+        "key": "Save",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 84
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 96
+        }
+      },
+      {
+        "comment": "",
+        "key": "Another device with IP address '%@' already exists.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 98
+        }
+      },
+      {
+        "comment": "",
+        "key": "OK",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 101
+        }
+      },
+      {
+        "comment": "",
+        "key": "The IP address '%@' appears to be invalid. Please enter a valid IPv4 address or hostname.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 103
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -15,7 +15,6 @@
 		A006 /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B006 /* WindowManager.swift */; };
 		A007 /* FloatingWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B007 /* FloatingWindowController.swift */; };
 		A008 /* FindDevicesWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B008 /* FindDevicesWindowController.swift */; };
-		A009 /* NetworkScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B009 /* NetworkScanner.swift */; };
 		A010 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = B010 /* Protocols.swift */; };
 		A011 /* DeviceEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B011 /* DeviceEditView.swift */; };
 		A012 /* FloatingDeviceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B012 /* FloatingDeviceListView.swift */; };
@@ -24,8 +23,9 @@
 		A015 /* ModeSelectorWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B015 /* ModeSelectorWindowController.swift */; };
 		A016 /* CLIRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B016 /* CLIRunner.swift */; };
 		A017 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B017 /* ContentView.swift */; };
+		A024 /* EnhancedNetworkScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B024 /* EnhancedNetworkScanner.swift */; };
+		A025 /* EnhancedNetworkScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B025 /* EnhancedNetworkScannerView.swift */; };
 		A018 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B018 /* Media.xcassets */; };
-		A019 /* MultiPing.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = B019 /* MultiPing.entitlements */; };
 		A020 /* cli.py in Resources */ = {isa = PBXBuildFile; fileRef = B020 /* cli.py */; };
 /* End PBXBuildFile section */
 
@@ -39,7 +39,6 @@
 		B006 /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
 		B007 /* FloatingWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingWindowController.swift; sourceTree = "<group>"; };
 		B008 /* FindDevicesWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindDevicesWindowController.swift; sourceTree = "<group>"; };
-		B009 /* NetworkScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkScanner.swift; sourceTree = "<group>"; };
 		B010 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		B011 /* DeviceEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceEditView.swift; sourceTree = "<group>"; };
 		B012 /* FloatingDeviceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingDeviceListView.swift; sourceTree = "<group>"; };
@@ -48,6 +47,8 @@
 		B015 /* ModeSelectorWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeSelectorWindowController.swift; sourceTree = "<group>"; };
 		B016 /* CLIRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLIRunner.swift; sourceTree = "<group>"; };
 		B017 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		B024 /* EnhancedNetworkScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedNetworkScanner.swift; sourceTree = "<group>"; };
+		B025 /* EnhancedNetworkScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedNetworkScannerView.swift; sourceTree = "<group>"; };
 		B018 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		B019 /* MultiPing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MultiPing.entitlements; sourceTree = "<group>"; };
 		B020 /* cli.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cli.py; sourceTree = "<group>"; };
@@ -95,12 +96,13 @@
 				B007 /* FloatingWindowController.swift */,
 				B008 /* FindDevicesWindowController.swift */,
 				B012 /* FloatingDeviceListView.swift */,
-				B009 /* NetworkScanner.swift */,
 				B010 /* Protocols.swift */,
 				B013 /* FileImporter.swift */,
 				B015 /* ModeSelectorWindowController.swift */,
 				B016 /* CLIRunner.swift */,
 				B017 /* ContentView.swift */,
+				B024 /* EnhancedNetworkScanner.swift */,
+				B025 /* EnhancedNetworkScannerView.swift */,
 				B018 /* Media.xcassets */,
 				B019 /* MultiPing.entitlements */,
 				B020 /* cli.py */,
@@ -168,7 +170,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				A018 /* Media.xcassets in Resources */,
-				A019 /* MultiPing.entitlements in Resources */,
 				A020 /* cli.py in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -188,7 +189,6 @@
 				A006 /* WindowManager.swift in Sources */,
 				A007 /* FloatingWindowController.swift in Sources */,
 				A008 /* FindDevicesWindowController.swift in Sources */,
-				A009 /* NetworkScanner.swift in Sources */,
 				A010 /* Protocols.swift in Sources */,
 				A011 /* DeviceEditView.swift in Sources */,
 				A012 /* FloatingDeviceListView.swift in Sources */,
@@ -197,6 +197,8 @@
 				A015 /* ModeSelectorWindowController.swift in Sources */,
 				A016 /* CLIRunner.swift in Sources */,
 				A017 /* ContentView.swift in Sources */,
+				A024 /* EnhancedNetworkScanner.swift in Sources */,
+				A025 /* EnhancedNetworkScannerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,7 +342,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.7;
+				MARKETING_VERSION = 1.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.multiping.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -367,7 +369,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.7;
+				MARKETING_VERSION = 1.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.multiping.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
