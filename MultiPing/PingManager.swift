@@ -115,6 +115,7 @@ class PingManager: ObservableObject {
             print("PingManager: Adding device \(device.name) - \(device.ipAddress)")
             devices.append(device)
             pingDeviceImmediately(device) // Ping the new device right away
+            NotificationCenter.default.post(name: NSNotification.Name("DevicesDidChange"), object: nil)
             return true // <-- Return true because device was added
         } else {
             print("PingManager: Device with IP \(device.ipAddress) already exists. Skipping add.")
@@ -179,6 +180,7 @@ class PingManager: ObservableObject {
                   print("PingManager: IP address changed for \(updatedDevice.name). Pinging immediately.")
                  pingDeviceImmediately(updatedDevice)
              }
+             NotificationCenter.default.post(name: NSNotification.Name("DevicesDidChange"), object: nil)
          } else {
               print("PingManager: Error - Could not find device with ID \(updatedDevice.id) to update.")
          }

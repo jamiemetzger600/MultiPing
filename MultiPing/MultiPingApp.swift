@@ -233,7 +233,6 @@ struct MultiPingApp: App {
         set pyPath to quoted form of "\(pythonPath)"
         set scriptArg to quoted form of "\(scriptPath)"
         set commandToRun to pyPath & " " & scriptArg
-        print("Final command for Terminal: " & commandToRun)
 
         tell application "Terminal"
             activate
@@ -253,6 +252,16 @@ struct MultiPingApp: App {
                 print("AppleScript executed successfully (check Terminal).")
             } else {
                 print("AppleScript Execution Failed: \(errorDict ?? [:])")
+                
+                // Check if it's a permission error
+                let errorCode = errorDict?[NSAppleScript.errorNumber] as? Int ?? 0
+                let errorMessage = errorDict?[NSAppleScript.errorMessage] as? String ?? "Unknown error"
+                
+                if errorCode == -1743 || errorMessage.contains("not authorized") {
+                    print("Permission denied: App needs automation permission for Terminal.app")
+                    print("User should grant permission in System Preferences > Security & Privacy > Privacy > Automation")
+                }
+                
                 DispatchQueue.main.async { self.switchMode(to: "menuBar") } // Fallback
             }
         } else {

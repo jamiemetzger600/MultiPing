@@ -245,9 +245,9 @@ class MenuBarController: NSObject {
         let menu = NSMenu()
         
         // Title item with version number
-        let titleItem = menu.addItem(withTitle: "MultiPing v1.7 Final", action: nil, keyEquivalent: "")
+        let titleItem = menu.addItem(withTitle: "MultiPing v1.8", action: nil, keyEquivalent: "")
         titleItem.attributedTitle = NSAttributedString(
-            string: "MultiPing v1.7 Final",
+            string: "MultiPing v1.8",
             attributes: [
                 .font: NSFont.menuFont(ofSize: 14),
                 .foregroundColor: NSColor.labelColor
@@ -262,6 +262,22 @@ class MenuBarController: NSObject {
         
         let findDevicesItem = menu.addItem(withTitle: "Find Devices on Network", action: #selector(showFindDevicesWindow), keyEquivalent: "")
         findDevicesItem.target = self
+        
+        // Add CLI monitoring options
+        let cliSubmenu = NSMenu()
+        let cliMenuItem = NSMenuItem(title: "CLI Monitor", action: nil, keyEquivalent: "")
+        
+        let cliQuickItem = NSMenuItem(title: "Quick Launch (Default Settings)", action: #selector(launchCLIQuick), keyEquivalent: "")
+        cliQuickItem.target = self
+        
+        let cliAdvancedItem = NSMenuItem(title: "Advanced Options...", action: #selector(launchCLIAdvanced), keyEquivalent: "")
+        cliAdvancedItem.target = self
+        
+        cliSubmenu.addItem(cliQuickItem)
+        cliSubmenu.addItem(cliAdvancedItem)
+        
+        cliMenuItem.submenu = cliSubmenu
+        menu.addItem(cliMenuItem)
         
         // Keep only the Toggle Floating Window menu item
         let toggleFloatingWindowItem = menu.addItem(withTitle: "Toggle Floating Window", action: #selector(toggleFloatingWindow), keyEquivalent: "")
@@ -404,6 +420,16 @@ class MenuBarController: NSObject {
         print("MenuBarController: quitApp action triggered")
         cleanup()
         NSApp.terminate(nil)
+    }
+    
+    @objc func launchCLIQuick() {
+        print("MenuBarController: launchCLIQuick action triggered")
+        EnhancedCLIRunner.shared.launchCLIMonitorWithTerminal()
+    }
+    
+    @objc func launchCLIAdvanced() {
+        print("MenuBarController: launchCLIAdvanced action triggered")
+        EnhancedCLIRunner.shared.launchCLIMonitorAdvancedWithTerminal()
     }
     
     @objc func sendFeatureRequest() {

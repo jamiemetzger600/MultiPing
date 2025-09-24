@@ -25,6 +25,10 @@
 		A017 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B017 /* ContentView.swift */; };
 		A024 /* EnhancedNetworkScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B024 /* EnhancedNetworkScanner.swift */; };
 		A025 /* EnhancedNetworkScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B025 /* EnhancedNetworkScannerView.swift */; };
+		A026 /* EnhancedCLIRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B026 /* EnhancedCLIRunner.swift */; };
+		A027 /* CLITerminalWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B027 /* CLITerminalWindowController.swift */; };
+		A028 /* CLITerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B028 /* CLITerminalView.swift */; };
+		A029 /* CLIDataBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = B029 /* CLIDataBridge.swift */; };
 		A018 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B018 /* Media.xcassets */; };
 		A020 /* cli.py in Resources */ = {isa = PBXBuildFile; fileRef = B020 /* cli.py */; };
 /* End PBXBuildFile section */
@@ -49,6 +53,10 @@
 		B017 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		B024 /* EnhancedNetworkScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedNetworkScanner.swift; sourceTree = "<group>"; };
 		B025 /* EnhancedNetworkScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedNetworkScannerView.swift; sourceTree = "<group>"; };
+		B026 /* EnhancedCLIRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedCLIRunner.swift; sourceTree = "<group>"; };
+		B027 /* CLITerminalWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLITerminalWindowController.swift; sourceTree = "<group>"; };
+		B028 /* CLITerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLITerminalView.swift; sourceTree = "<group>"; };
+		B029 /* CLIDataBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLIDataBridge.swift; sourceTree = "<group>"; };
 		B018 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		B019 /* MultiPing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MultiPing.entitlements; sourceTree = "<group>"; };
 		B020 /* cli.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = cli.py; sourceTree = "<group>"; };
@@ -103,6 +111,10 @@
 				B017 /* ContentView.swift */,
 				B024 /* EnhancedNetworkScanner.swift */,
 				B025 /* EnhancedNetworkScannerView.swift */,
+				B026 /* EnhancedCLIRunner.swift */,
+				B027 /* CLITerminalWindowController.swift */,
+				B028 /* CLITerminalView.swift */,
+				B029 /* CLIDataBridge.swift */,
 				B018 /* Media.xcassets */,
 				B019 /* MultiPing.entitlements */,
 				B020 /* cli.py */,
@@ -199,6 +211,10 @@
 				A017 /* ContentView.swift in Sources */,
 				A024 /* EnhancedNetworkScanner.swift in Sources */,
 				A025 /* EnhancedNetworkScannerView.swift in Sources */,
+				A026 /* EnhancedCLIRunner.swift in Sources */,
+				A027 /* CLITerminalWindowController.swift in Sources */,
+				A028 /* CLITerminalView.swift in Sources */,
+				A029 /* CLIDataBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

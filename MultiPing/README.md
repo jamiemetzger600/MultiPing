@@ -1,4 +1,4 @@
-# MultiPing v1.6
+# MultiPing v1.8
 
 A macOS utility for monitoring multiple devices via ping with an elegant interface.
 
