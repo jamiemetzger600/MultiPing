@@ -157,6 +157,12 @@ struct MultiPingApp: App {
 
         print("AppDelegate: Switching mode from \(currentMode) to \(newMode)")
         
+        // Close CLI window if switching away from CLI mode
+        if currentMode == "cli" && newMode != "cli" {
+            print("AppDelegate: Closing CLI window when switching from CLI mode")
+            EnhancedCLIRunner.shared.closeTerminalWindow()
+        }
+        
         // Update mode immediately to prevent race conditions
         currentMode = newMode
         
@@ -200,7 +206,8 @@ struct MultiPingApp: App {
                 self.floatingWindowController.hide()
                 self.menuBarController.hide()
                 self.mainWindowManager.hideMainWindow()
-                self.launchCliScript()
+                // Launch the built-in CLI terminal window
+                EnhancedCLIRunner.shared.launchCLIMonitorWithTerminal()
                 
             default:
                 print("Applying default (menuBar) state due to unknown mode: \(mode)")

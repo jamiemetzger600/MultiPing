@@ -189,7 +189,7 @@ class PingManager: ObservableObject {
     func pingDeviceImmediately(_ device: Device) {
          DispatchQueue.global(qos: .background).async { [weak self] in
              guard let self = self else { return }
-             let isReachable = self.ping(ip: device.ipAddress)
+             let pingResult = self.ping(ip: device.ipAddress)
              DispatchQueue.main.async { [weak self] in
                  guard let self = self else { return }
                  // Use a more robust approach to find and update the device
@@ -203,9 +203,11 @@ class PingManager: ObservableObject {
                      // Double-check bounds before accessing
                      guard i < self.devices.count else { continue }
                      if self.devices[i].id == device.id {
-                         if self.devices[i].isReachable != isReachable {
-                             self.devices[i].isReachable = isReachable
-                         }
+                         // Update device with ping results
+                         self.devices[i].isReachable = pingResult.success
+                         self.devices[i].lastLatency = pingResult.latency
+                         self.devices[i].lastPacketLoss = pingResult.packetLoss
+                         self.devices[i].lastPingTime = Date()
                          break
                      }
                  }
@@ -222,10 +224,13 @@ class PingManager: ObservableObject {
             for index in updatedDevices.indices {
                 dispatchGroup.enter()
                 queue.async {
-                    let reachable = self.ping(ip: updatedDevices[index].ipAddress)
+                    let pingResult = self.ping(ip: updatedDevices[index].ipAddress)
                     DispatchQueue.main.async {
                         if updatedDevices.indices.contains(index) {
-                            updatedDevices[index].isReachable = reachable
+                            updatedDevices[index].isReachable = pingResult.success
+                            updatedDevices[index].lastLatency = pingResult.latency
+                            updatedDevices[index].lastPacketLoss = pingResult.packetLoss
+                            updatedDevices[index].lastPingTime = Date()
                         }
                         dispatchGroup.leave()
                     }
@@ -235,12 +240,17 @@ class PingManager: ObservableObject {
             dispatchGroup.wait()
 
             DispatchQueue.main.async {
-                let hasChanges = zip(self.devices, updatedDevices).contains { $0.isReachable != $1.isReachable }
+                let hasChanges = zip(self.devices, updatedDevices).contains { 
+                    $0.isReachable != $1.isReachable || 
+                    $0.lastLatency != $1.lastLatency || 
+                    $0.lastPacketLoss != $1.lastPacketLoss 
+                }
                 if hasChanges {
                     for i in self.devices.indices {
-                         if self.devices[i].isReachable != updatedDevices[i].isReachable {
-                              self.devices[i].isReachable = updatedDevices[i].isReachable
-                         }
+                        self.devices[i].isReachable = updatedDevices[i].isReachable
+                        self.devices[i].lastLatency = updatedDevices[i].lastLatency
+                        self.devices[i].lastPacketLoss = updatedDevices[i].lastPacketLoss
+                        self.devices[i].lastPingTime = updatedDevices[i].lastPingTime
                     }
                 }
                 completion?(updatedDevices)
@@ -248,11 +258,11 @@ class PingManager: ObservableObject {
         }
     }
 
-    private func ping(ip: String) -> Bool {
+    private func ping(ip: String) -> (success: Bool, latency: Double?, packetLoss: Double?) {
          let possiblePaths = ["/sbin/ping", "/usr/bin/ping"]
          guard let pingPath = possiblePaths.first(where: { FileManager.default.fileExists(atPath: $0) }) else {
              print("Ping binary not found on this system.")
-             return false
+             return (false, nil, nil)
          }
 
          let task = Process()
@@ -272,11 +282,62 @@ class PingManager: ObservableObject {
          do {
              try task.run()
              task.waitUntilExit()
-             return task.terminationStatus == 0
+             
+             let success = task.terminationStatus == 0
+             
+            // Parse ping output for latency and packet loss
+            let data = pipe.fileHandleForReading.readDataToEndOfFile()
+            let output = String(data: data, encoding: .utf8) ?? ""
+            
+            let latency = parseLatency(from: output)
+            let packetLoss = parsePacketLoss(from: output)
+            
+            return (success, latency, packetLoss)
          } catch {
              print("Failed to ping \(ip): \(error)")
-             return false
+             return (false, nil, nil)
          }
+    }
+    
+    /// Parse latency from ping output
+    private func parseLatency(from output: String) -> Double? {
+        // Look for patterns in macOS ping output
+        // Format: "round-trip min/avg/max/stddev = 32.804/32.804/32.804/0.000 ms"
+        let patterns = [
+            "round-trip min/avg/max/stddev = ([0-9.]+)/[0-9.]+/[0-9.]+/[0-9.]+ ms",
+            "time=([0-9.]+) ms",
+            "time<([0-9.]+) ms"
+        ]
+        
+        for pattern in patterns {
+            if let regex = try? NSRegularExpression(pattern: pattern),
+               let match = regex.firstMatch(in: output, range: NSRange(output.startIndex..., in: output)),
+               let range = Range(match.range(at: 1), in: output) {
+                let latencyString = String(output[range])
+                if let latency = Double(latencyString) {
+                    return latency
+                }
+            }
+        }
+        
+        return nil
+    }
+    
+    /// Parse packet loss from ping output
+    private func parsePacketLoss(from output: String) -> Double? {
+        // Look for patterns like "0.0% packet loss" or "100% packet loss"
+        let pattern = "([0-9.]+)% packet loss"
+        
+        if let regex = try? NSRegularExpression(pattern: pattern),
+           let match = regex.firstMatch(in: output, range: NSRange(output.startIndex..., in: output)),
+           let range = Range(match.range(at: 1), in: output) {
+            let packetLossString = String(output[range])
+            if let packetLoss = Double(packetLossString) {
+                return packetLoss
+            }
+        }
+        
+        return nil
     }
 }
 

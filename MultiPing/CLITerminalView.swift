@@ -7,40 +7,118 @@ struct CLITerminalView: View {
     @State private var historyIndex: Int = -1
     @FocusState private var isInputFocused: Bool
     
+    // Enhanced CLI features
+    @State private var displayMode: DisplayMode = .detailed
+    @State private var refreshInterval: Double = 1.0
+    @State private var pingTimeout: Double = 1.0
+    @State private var pingCount: Int = 1
+    @State private var isPinned: Bool = false
+    
+    enum DisplayMode: String, CaseIterable {
+        case simple = "simple"
+        case detailed = "detailed"
+        case compact = "compact"
+        case live = "live"
+        
+        var description: String {
+            switch self {
+            case .simple: return "Simple - Summary only"
+            case .detailed: return "Detailed - Full table with metrics"
+            case .compact: return "Compact - Ultra-compact single line"
+            case .live: return "Live - Real-time updates"
+            }
+        }
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
-            // Terminal Header
-            HStack {
-                Text("MultiPing CLI Monitor")
-                    .font(.headline)
-                    .foregroundColor(.white)
-                
-                Spacer()
-                
-                // Status indicator
-                Circle()
-                    .fill(outputStream.isRunning ? Color.green : Color.red)
-                    .frame(width: 8, height: 8)
-                
-                Text(outputStream.isRunning ? "Running" : "Stopped")
-                    .font(.caption)
-                    .foregroundColor(.white)
-                
-                Spacer()
-                
-                // Control buttons
-                HStack(spacing: 8) {
-                    Button("Clear") {
-                        outputStream.clearOutput()
-                    }
-                    .buttonStyle(TerminalButtonStyle())
+            // Enhanced Terminal Header
+            VStack(spacing: 8) {
+                HStack {
+                    Text("MultiPing CLI Monitor")
+                        .font(.headline)
+                        .foregroundColor(.terminalGreen)
                     
-                    Button("Close") {
-                        if let window = NSApp.keyWindow {
-                            window.close()
+                    Spacer()
+                    
+                    // Status indicator
+                    Circle()
+                        .fill(outputStream.isRunning ? Color.terminalGreen : Color.terminalRed)
+                        .frame(width: 8, height: 8)
+                    
+                    Text(outputStream.isRunning ? "Running" : "Stopped")
+                        .font(.caption)
+                        .foregroundColor(.terminalText)
+                    
+                    Spacer()
+                    
+                    // Control buttons
+                    HStack(spacing: 8) {
+                        // Pin/Unpin button
+                        Button(action: {
+                            togglePin()
+                        }) {
+                            Image(systemName: isPinned ? "pin.fill" : "pin.slash")
+                                .foregroundColor(isPinned ? .terminalBlue : .terminalGray)
+                                .help("Toggle Always on Top")
                         }
+                        .buttonStyle(TerminalButtonStyle())
+                        
+                        Button("Clear") {
+                            outputStream.clearOutput()
+                        }
+                        .buttonStyle(TerminalButtonStyle())
+                        
+                        Button("Close") {
+                            if let window = NSApp.keyWindow {
+                                window.close()
+                            }
+                        }
+                        .buttonStyle(TerminalButtonStyle())
                     }
-                    .buttonStyle(TerminalButtonStyle())
+                }
+                
+                // Enhanced controls row
+                HStack {
+                    Spacer()
+                    
+                    // Refresh interval control
+                    HStack {
+                        Text("Interval:")
+                            .font(.caption)
+                            .foregroundColor(.terminalText)
+                        TextField("1.0", value: $refreshInterval, format: .number)
+                            .frame(width: 40)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        Text("s")
+                            .font(.caption)
+                            .foregroundColor(.terminalText)
+                    }
+                    
+                    // Ping timeout control
+                    HStack {
+                        Text("Timeout:")
+                            .font(.caption)
+                            .foregroundColor(.terminalText)
+                        TextField("1.0", value: $pingTimeout, format: .number)
+                            .frame(width: 40)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                        Text("s")
+                            .font(.caption)
+                            .foregroundColor(.terminalText)
+                    }
+                    
+                    // Ping count control
+                    HStack {
+                        Text("Count:")
+                            .font(.caption)
+                            .foregroundColor(.terminalText)
+                        TextField("1", value: $pingCount, format: .number)
+                            .frame(width: 30)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                    }
+                    
+                    Spacer()
                 }
             }
             .padding(.horizontal, 12)
@@ -113,9 +191,24 @@ struct CLITerminalView: View {
             .background(Color.terminalDarkGray)
             .onAppear {
                 isInputFocused = true
+                showHelp()
+                // Initialize pin state
+                isPinned = UserDefaults.standard.bool(forKey: "cliAlwaysOnTop")
             }
         }
         .frame(minWidth: 600, minHeight: 400)
+    }
+    
+    // MARK: - Pin Functionality
+    
+    private func togglePin() {
+        isPinned.toggle()
+        
+        // Find the window controller and call its togglePin method
+        if let window = NSApp.keyWindow,
+           let windowController = window.windowController as? CLITerminalWindowController {
+            windowController.togglePin()
+        }
     }
     
     // MARK: - Command Execution
@@ -173,19 +266,55 @@ struct CLITerminalView: View {
             if parts.count > 1 {
                 removeDevice(parts[1])
             } else {
-                outputStream.addOutput("Usage: remove <name_or_ip>\n")
+                outputStream.addOutput("Usage: remove <ip_address>\n")
             }
+        case "mode":
+            if parts.count > 1 {
+                setDisplayMode(parts[1])
+            } else {
+                showDisplayModes()
+            }
+        case "interval", "i":
+            if parts.count > 1, let interval = Double(parts[1]) {
+                setRefreshInterval(interval)
+            } else {
+                outputStream.addOutput("Usage: interval <seconds>\n")
+            }
+        case "timeout", "t":
+            if parts.count > 1, let timeout = Double(parts[1]) {
+                setPingTimeout(timeout)
+            } else {
+                outputStream.addOutput("Usage: timeout <seconds>\n")
+            }
+        case "count", "c":
+            if parts.count > 1, let count = Int(parts[1]) {
+                setPingCount(count)
+            } else {
+                outputStream.addOutput("Usage: count <number>\n")
+            }
+        case "stats", "statistics":
+            showStatistics()
         case "export":
             exportDevices()
         case "import":
             if parts.count > 1 {
-                importDevices(from: parts[1])
+                importDevices(parts[1])
             } else {
                 outputStream.addOutput("Usage: import <file_path>\n")
             }
+        case "monitor", "watch":
+            if parts.count > 1 {
+                monitorDevice(parts[1])
+            } else {
+                outputStream.addOutput("Usage: monitor <ip_address>\n")
+            }
         case "history":
             showHistory()
-        case "exit", "quit":
+        case "config":
+            showConfig()
+        case "reset":
+            resetConfig()
+        case "quit", "exit", "q":
             if let window = NSApp.keyWindow {
                 window.close()
             }
@@ -203,11 +332,22 @@ struct CLITerminalView: View {
           add <name> [ip]   - Add a new device
           remove <name/ip>  - Remove a device
           ping <ip>         - Ping a specific IP address
+          monitor <ip>      - Focus monitoring on specific device
         
         🔄 Monitoring:
           start             - Start monitoring all devices
           stop              - Stop monitoring
           status            - Show current monitoring status
+          stats             - Show detailed statistics
+        
+        ⚙️ Configuration:
+          mode [mode]       - Set display mode (simple/detailed/compact/live)
+          interval <sec>    - Set refresh interval (0.1-60s)
+          timeout <sec>     - Set ping timeout (0.1-30s)
+          count <num>       - Set ping count per cycle (1-10)
+          timestamp         - Toggle timestamp display
+          config            - Show current configuration
+          reset             - Reset to default configuration
         
         📁 File Operations:
           export            - Export devices to CSV
@@ -219,18 +359,18 @@ struct CLITerminalView: View {
           help, ?           - Show this help
           exit, quit        - Close terminal
         
-        ⌨️  Keyboard Shortcuts:
-          ↑/↓               - Navigate command history
-          Tab               - Auto-complete commands
-          Escape            - Clear current input
-          Enter             - Execute command
-          Cmd+K             - Clear terminal
+        📊 Display Modes:
+          simple            - Summary only with key devices
+          detailed          - Full table with all metrics
+          compact           - Ultra-compact single line
+          live              - Real-time updates (default)
         
         Examples:
-          add Router 192.168.1.1
-          ping 8.8.8.8
-          start
-          export
+          mode detailed     - Switch to detailed display
+          interval 2.5      - Set 2.5 second refresh
+          timeout 3         - Set 3 second ping timeout
+          ping 192.168.1.1  - Test ping to specific IP
+          export            - Save device list to desktop
         
         """
         outputStream.addOutput(helpText)
@@ -293,30 +433,6 @@ struct CLITerminalView: View {
         outputStream.addSuccessMessage("Device removed successfully.")
     }
     
-    private func exportDevices() {
-        outputStream.addProgressMessage("Exporting devices...")
-        // This would integrate with your export functionality
-        outputStream.addSuccessMessage("Devices exported to ~/Desktop/devices.csv")
-    }
-    
-    private func importDevices(from file: String) {
-        outputStream.addProgressMessage("Importing devices from \(file)...")
-        // This would integrate with your import functionality
-        outputStream.addSuccessMessage("Imported 5 devices from \(file)")
-    }
-    
-    private func showHistory() {
-        if commandHistory.isEmpty {
-            outputStream.addOutput("No command history.\n")
-            return
-        }
-        
-        outputStream.addOutput("Command History:\n")
-        for (index, cmd) in commandHistory.enumerated() {
-            outputStream.addOutput("  \(index + 1). \(cmd)\n")
-        }
-        outputStream.addOutput("\n")
-    }
     
     // MARK: - History Navigation
     
@@ -350,6 +466,180 @@ struct CLITerminalView: View {
         } else if matches.count > 1 {
             outputStream.addOutput("Possible completions: \(matches.joined(separator: ", "))\n")
         }
+    }
+    
+    // MARK: - Enhanced Command Implementations
+    
+    private func setDisplayMode(_ mode: String) {
+        if let newMode = DisplayMode(rawValue: mode.lowercased()) {
+            displayMode = newMode
+            outputStream.addOutput("Display mode set to: \(newMode.rawValue) - \(newMode.description)\n")
+        } else {
+            outputStream.addOutput("Invalid display mode: \(mode). Available modes: \(DisplayMode.allCases.map { $0.rawValue }.joined(separator: ", "))\n")
+        }
+    }
+    
+    private func showDisplayModes() {
+        outputStream.addOutput("Available display modes:\n")
+        for mode in DisplayMode.allCases {
+            outputStream.addOutput("  \(mode.rawValue) - \(mode.description)\n")
+        }
+    }
+    
+    private func setRefreshInterval(_ interval: Double) {
+        guard interval > 0 && interval <= 60 else {
+            outputStream.addOutput("Invalid interval. Must be between 0.1 and 60 seconds.\n")
+            return
+        }
+        refreshInterval = interval
+        outputStream.addOutput("Refresh interval set to: \(interval)s\n")
+    }
+    
+    private func setPingTimeout(_ timeout: Double) {
+        guard timeout > 0 && timeout <= 30 else {
+            outputStream.addOutput("Invalid timeout. Must be between 0.1 and 30 seconds.\n")
+            return
+        }
+        pingTimeout = timeout
+        outputStream.addOutput("Ping timeout set to: \(timeout)s\n")
+    }
+    
+    private func setPingCount(_ count: Int) {
+        guard count > 0 && count <= 10 else {
+            outputStream.addOutput("Invalid count. Must be between 1 and 10.\n")
+            return
+        }
+        pingCount = count
+        outputStream.addOutput("Ping count set to: \(count)\n")
+    }
+    
+    private func showStatistics() {
+        let devices = PingManager.shared.devices
+        let onlineCount = devices.filter { $0.isReachable }.count
+        let offlineCount = devices.filter { !$0.isReachable }.count
+        
+        outputStream.addOutput("📊 MultiPing Statistics:\n")
+        outputStream.addOutput("=" + String(repeating: "=", count: 40) + "\n")
+        outputStream.addOutput("Total Devices: \(devices.count)\n")
+        outputStream.addOutput("Online: \(onlineCount) (\(String(format: "%.1f", Double(onlineCount) / Double(devices.count) * 100))%)\n")
+        outputStream.addOutput("Offline: \(offlineCount) (\(String(format: "%.1f", Double(offlineCount) / Double(devices.count) * 100))%)\n")
+        outputStream.addOutput("Refresh Interval: \(refreshInterval)s\n")
+        outputStream.addOutput("Ping Timeout: \(pingTimeout)s\n")
+        outputStream.addOutput("Ping Count: \(pingCount)\n")
+        outputStream.addOutput("Display Mode: \(displayMode.rawValue)\n")
+    }
+    
+    private func exportDevices() {
+        let devices = PingManager.shared.devices
+        let timestamp = DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .short)
+        
+        outputStream.addOutput("📁 Exporting devices...\n")
+        
+        var csvContent = "Name,IP Address,Status,Note,Last Update\n"
+        for device in devices {
+            let status = device.isReachable ? "UP" : "DOWN"
+            let note = device.note ?? ""
+            csvContent += "\"\(device.name)\",\"\(device.ipAddress)\",\"\(status)\",\"\(note)\",\"\(timestamp)\"\n"
+        }
+        
+        // Save to desktop
+        let desktopURL = FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask).first!
+        let fileName = "MultiPing_Devices_\(Date().timeIntervalSince1970).csv"
+        let fileURL = desktopURL.appendingPathComponent(fileName)
+        
+        do {
+            try csvContent.write(to: fileURL, atomically: true, encoding: .utf8)
+            outputStream.addOutput("✅ Exported \(devices.count) devices to: \(fileName)\n")
+        } catch {
+            outputStream.addOutput("❌ Export failed: \(error.localizedDescription)\n")
+        }
+    }
+    
+    private func importDevices(_ filePath: String) {
+        outputStream.addOutput("📁 Importing devices from: \(filePath)\n")
+        
+        let fileURL = URL(fileURLWithPath: filePath)
+        guard FileManager.default.fileExists(atPath: filePath) else {
+            outputStream.addOutput("❌ File not found: \(filePath)\n")
+            return
+        }
+        
+        do {
+            let content = try String(contentsOf: fileURL)
+            let lines = content.components(separatedBy: .newlines)
+            var importedCount = 0
+            
+            for line in lines {
+                let trimmedLine = line.trimmingCharacters(in: .whitespacesAndNewlines)
+                if trimmedLine.isEmpty || trimmedLine.hasPrefix("#") {
+                    continue
+                }
+                
+                // Parse CSV format: Name,IP,Note
+                let components = trimmedLine.components(separatedBy: ",")
+                if components.count >= 2 {
+                    let name = components[0].trimmingCharacters(in: .whitespacesAndNewlines)
+                    let ip = components[1].trimmingCharacters(in: .whitespacesAndNewlines)
+                    let note = components.count > 2 ? components[2].trimmingCharacters(in: .whitespacesAndNewlines) : ""
+                    
+                    // Add device to PingManager
+                    let device = Device(name: name, ipAddress: ip, note: note.isEmpty ? nil : note)
+                    PingManager.shared.addDevice(device)
+                    importedCount += 1
+                }
+            }
+            
+            outputStream.addOutput("✅ Imported \(importedCount) devices successfully\n")
+        } catch {
+            outputStream.addOutput("❌ Import failed: \(error.localizedDescription)\n")
+        }
+    }
+    
+    private func monitorDevice(_ ipAddress: String) {
+        outputStream.addOutput("🔍 Starting focused monitoring for: \(ipAddress)\n")
+        
+        // Find the device
+        let devices = PingManager.shared.devices
+        guard let device = devices.first(where: { $0.ipAddress == ipAddress }) else {
+            outputStream.addOutput("❌ Device not found: \(ipAddress)\n")
+            return
+        }
+        
+        outputStream.addOutput("📡 Monitoring \(device.name) (\(device.ipAddress))\n")
+        outputStream.addOutput("Status: \(device.isReachable ? "🟢 UP" : "🔴 DOWN")\n")
+        if let note = device.note {
+            outputStream.addOutput("Note: \(note)\n")
+        }
+    }
+    
+    private func showHistory() {
+        outputStream.addOutput("📜 Command History:\n")
+        if commandHistory.isEmpty {
+            outputStream.addOutput("No commands in history.\n")
+        } else {
+            for (index, command) in commandHistory.enumerated() {
+                outputStream.addOutput("\(index + 1). \(command)\n")
+            }
+        }
+    }
+    
+    private func showConfig() {
+        outputStream.addOutput("⚙️ Current Configuration:\n")
+        outputStream.addOutput("=" + String(repeating: "=", count: 30) + "\n")
+        outputStream.addOutput("Display Mode: \(displayMode.rawValue)\n")
+        outputStream.addOutput("Refresh Interval: \(refreshInterval)s\n")
+        outputStream.addOutput("Ping Timeout: \(pingTimeout)s\n")
+        outputStream.addOutput("Ping Count: \(pingCount)\n")
+        outputStream.addOutput("Total Devices: \(PingManager.shared.devices.count)\n")
+    }
+    
+    private func resetConfig() {
+        displayMode = .detailed
+        refreshInterval = 1.0
+        pingTimeout = 1.0
+        pingCount = 1
+        
+        outputStream.addOutput("🔄 Configuration reset to defaults\n")
     }
 }
 

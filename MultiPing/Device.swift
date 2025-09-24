@@ -14,6 +14,9 @@ struct Device: Identifiable, Codable, Hashable {
     var ipAddress: String
     var note: String?
     var isReachable: Bool = false
+    var lastLatency: Double? = nil  // Last ping latency in milliseconds
+    var lastPacketLoss: Double? = nil  // Last packet loss percentage
+    var lastPingTime: Date? = nil  // When the last ping was performed
 
     init(id: UUID = UUID(), name: String, ipAddress: String, note: String? = nil) {
         self.id = id

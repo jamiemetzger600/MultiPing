@@ -53,6 +53,16 @@ class EnhancedCLIRunner {
         // Clear the reference to the terminal window controller when it closes
         DispatchQueue.main.async {
             self.terminalWindowController = nil
+            
+            // Switch back to menubar mode when CLI window closes
+            if let appDelegate = NSApp.delegate as? AppDelegate {
+                print("EnhancedCLIRunner: CLI window closed, switching back to menubar mode")
+                appDelegate.switchMode(to: "menuBar")
+                
+                // Ensure the main window is shown and the app is activated
+                appDelegate.mainWindowManager.ensureMainWindow(appDelegate: appDelegate)
+                NSApp.activate(ignoringOtherApps: true)
+            }
         }
     }
     

@@ -13,6 +13,9 @@ class CLITerminalWindowController: NSWindowController, NSWindowDelegate {
     private var timeout: Double = 1.0
     private var mode: String = "simple"
     
+    // Pin/Always on top functionality
+    private var alwaysOnTop: Bool = false
+    
     init() {
         // Create the terminal window
         let window = NSWindow(
@@ -27,6 +30,12 @@ class CLITerminalWindowController: NSWindowController, NSWindowDelegate {
         window.setFrameAutosaveName("CLITerminalWindow")
         
         super.init(window: window)
+        
+        // Initialize pin state from UserDefaults
+        alwaysOnTop = UserDefaults.standard.bool(forKey: "cliAlwaysOnTop")
+        if alwaysOnTop {
+            window.level = .statusBar
+        }
         
         setupTerminalView()
         
@@ -393,6 +402,28 @@ struct TerminalLine {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm:ss"
         return "[\(formatter.string(from: timestamp))] \(content)"
+    }
+}
+
+// MARK: - Pin/Always On Top Methods
+extension CLITerminalWindowController {
+    func togglePin() {
+        alwaysOnTop.toggle()
+        UserDefaults.standard.set(alwaysOnTop, forKey: "cliAlwaysOnTop")
+        
+        if let window = window {
+            if alwaysOnTop {
+                window.level = .statusBar
+                print("CLI Terminal: Pinned to always stay on top")
+            } else {
+                window.level = .normal
+                print("CLI Terminal: Unpinned, normal window level")
+            }
+        }
+    }
+    
+    func isPinned() -> Bool {
+        return alwaysOnTop
     }
 }
 

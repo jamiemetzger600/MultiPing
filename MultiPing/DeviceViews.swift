@@ -16,6 +16,7 @@ struct DeviceListView: View {
     @State private var isExporting: Bool = false // For CSV
     @State private var documentToExport: DeviceListDocument?
     @State private var isExportingTxt: Bool = false // For TXT
+    @State private var documentToExportTxt: DeviceListTxtDocument?
     @State private var showingAddDeviceSheet = false
     @Environment(\.dismiss) var dismiss // For potential sheet dismissal
     @State private var showingAlert = false // Keep for import/export status
@@ -93,16 +94,8 @@ struct DeviceListView: View {
                     Text(error)
                 }
                 .fileExporter(
-                    isPresented: $isExporting,
-                    document: documentToExport,
-                    contentType: UTType.commaSeparatedText,
-                    defaultFilename: "MultiPing_Devices.csv"
-                ) { result in
-                    handleExportResult(result, type: "CSV")
-                }
-                .fileExporter(
                     isPresented: $isExportingTxt,
-                    document: documentToExport,
+                    document: documentToExportTxt,
                     contentType: UTType.plainText,
                     defaultFilename: "MultiPing_Devices.txt"
                 ) { result in
@@ -189,9 +182,19 @@ struct DeviceListView: View {
                     isExportingCSV: $isExporting,
                     isExportingTXT: $isExportingTxt,
                     prepareExportDocument: {
-                        guard !pingManager.devices.isEmpty else { return }
+                        guard !pingManager.devices.isEmpty else { 
+                            print("DeviceListView: Cannot export - no devices")
+                            return 
+                        }
+                        print("DeviceListView: Creating CSV document with \(pingManager.devices.count) devices")
                         documentToExport = DeviceListDocument(devices: pingManager.devices)
-                    }
+                        print("DeviceListView: CSV document created: \(documentToExport != nil)")
+                    },
+                    prepareExportDocumentTxt: {
+                        guard !pingManager.devices.isEmpty else { return }
+                        documentToExportTxt = DeviceListTxtDocument(devices: pingManager.devices)
+                    },
+                    exportDevicesToCSV: exportDevicesToCSV
                 )
                 
                 Divider()
@@ -224,6 +227,7 @@ struct DeviceListView: View {
             Picker("Mode", selection: selectedMode) { // Added label for clarity
                 Text("Menu Bar").tag("menuBar")
                 Text("Floating Window").tag("floatingWindow")
+                Text("CLI").tag("cli")
             }
             .pickerStyle(.segmented)
             .labelsHidden() // Hide the picker's own label
@@ -262,6 +266,52 @@ struct DeviceListView: View {
             showingErrorAlert = true
         }
         documentToExport = nil
+        documentToExportTxt = nil
+    }
+    
+    private func exportDevicesToCSV() {
+        print("DeviceListView: Starting CSV export with \(pingManager.devices.count) devices")
+        
+        let savePanel = NSSavePanel()
+        savePanel.allowedContentTypes = [.commaSeparatedText]
+        savePanel.nameFieldStringValue = "MultiPing_Devices.csv"
+        savePanel.title = "Export Devices as CSV"
+        savePanel.message = "Choose where to save the CSV file"
+        
+        savePanel.begin { response in
+            if response == .OK, let url = savePanel.url {
+                print("DeviceListView: User selected save location: \(url.path)")
+                
+                // Create CSV content
+                let csvContent = self.createCSVContent()
+                
+                do {
+                    try csvContent.write(to: url, atomically: true, encoding: .utf8)
+                    print("DeviceListView: Successfully exported CSV to \(url.path)")
+                } catch {
+                    print("DeviceListView: Failed to write CSV file: \(error.localizedDescription)")
+                    DispatchQueue.main.async {
+                        self.importError = "Failed to save CSV file: \(error.localizedDescription)"
+                        self.showingErrorAlert = true
+                    }
+                }
+            } else {
+                print("DeviceListView: CSV export cancelled by user")
+            }
+        }
+    }
+    
+    private func createCSVContent() -> String {
+        var csvContent = "Name,IP Address,Note\n"
+        
+        for device in pingManager.devices {
+            let name = device.name.replacingOccurrences(of: ",", with: ";")
+            let ip = device.ipAddress.replacingOccurrences(of: ",", with: ";")
+            let note = (device.note ?? "").replacingOccurrences(of: ",", with: ";")
+            csvContent += "\(name),\(ip),\(note)\n"
+        }
+        
+        return csvContent
     }
 
     // Keep list management functions: deleteSelected, moveSelectedUp, moveSelectedDown
@@ -457,6 +507,8 @@ struct ImportExportView: View {
     @Binding var isExportingCSV: Bool
     @Binding var isExportingTXT: Bool
     let prepareExportDocument: () -> Void
+    let prepareExportDocumentTxt: () -> Void
+    let exportDevicesToCSV: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -472,8 +524,8 @@ struct ImportExportView: View {
 
                 Button {
                     print("ImportExportView: Export CSV clicked.")
-                    prepareExportDocument()
-                    isExportingCSV = true
+                    print("ImportExportView: Devices count: \(pingManager.devices.count)")
+                    exportDevicesToCSV()
                 } label: {
                      Text("Export (CSV)")
                         .lineLimit(1)
@@ -483,7 +535,7 @@ struct ImportExportView: View {
 
                 Button {
                     print("ImportExportView: Export TXT clicked.")
-                    prepareExportDocument()
+                    prepareExportDocumentTxt()
                     isExportingTXT = true
                 } label: {
                      Text("Export (TXT)")
